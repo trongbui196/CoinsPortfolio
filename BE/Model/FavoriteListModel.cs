@@ -7,15 +7,15 @@ public class FavoriteListModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [BsonElement("userId")]
     [BsonRepresentation(BsonType.ObjectId)]
-    public ObjectId UserId { get; set; }
+    public ObjectId? UserId { get; set; }
 
     [BsonElement("favoriteList")]
     [BsonRepresentation(BsonType.ObjectId)]
-    public List<ObjectId> FavoriteList { get; set; }
+    public List<ObjectId>? FavoriteList { get; set; }
 
     [BsonElement("updatedAt")]
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]

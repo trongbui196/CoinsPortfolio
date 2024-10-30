@@ -4,7 +4,7 @@ public class portfolioCoinModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
+    public string? Id { get; set; }
     [BsonElement("userId")]
     [BsonRepresentation(BsonType.ObjectId)]
     public ObjectId UserId { get; set; }

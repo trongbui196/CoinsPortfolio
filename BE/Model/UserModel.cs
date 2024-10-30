@@ -6,35 +6,35 @@ public class UserModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
+    public string? Id { get; set; }
     [BsonElement("userName")]
     [BsonRequired]
-    public string userName { get; set; }
+    public string? userName { get; set; }
     [BsonElement("firstName")]
     [BsonRequired]
-    public string FirstName { get; set; }
+    public string? FirstName { get; set; }
     [BsonElement("lastName")]
     [BsonRequired]
-    public string LastName { get; set; }
+    public string? LastName { get; set; }
     [BsonElement("Email")]
     [BsonRequired]
-    public string Email { get; set; }
+    public string? Email { get; set; }
     [BsonElement("phoneNumber")]
     [BsonRequired]
-    public string PhoneNumber { get; set; }
+    public string? PhoneNumber { get; set; }
     [BsonElement("birthDay")]
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-    public DateTime birthDay { get; set; }
+    public DateTime? birthDay { get; set; }
     [BsonElement("password")]
     [BsonRequired]
-    public string password { get; set; }
+    public string? password { get; set; }
     [BsonElement("language")]
-    public string language { get; set; }
+    public string? language { get; set; }
     [BsonElement("currency")]
-    public string currency { get; set; }
+    public string? currency { get; set; }
     [BsonElement("avatarUrl")]
-    public string avatarUrl { get; set; }
+    public string? avatarUrl { get; set; }
     [BsonElement("createdAt")]
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-    public DateTime CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
 }

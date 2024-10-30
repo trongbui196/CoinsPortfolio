@@ -1,4 +1,3 @@
-C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\appsettings.json
 C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\BE.exe
 C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\BE.deps.json
@@ -55,3 +54,21 @@ C:\Users\An\Desktop\TrongD\FinalThesis\BE\obj\Debug\net8.0\refint\BE.dll
 C:\Users\An\Desktop\TrongD\FinalThesis\BE\obj\Debug\net8.0\BE.pdb
 C:\Users\An\Desktop\TrongD\FinalThesis\BE\obj\Debug\net8.0\BE.genruntimeconfig.cache
 C:\Users\An\Desktop\TrongD\FinalThesis\BE\obj\Debug\net8.0\ref\BE.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\AspNetCore.Identity.Mongo.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\System.Security.Permissions.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\BE\obj\Debug\net8.0\BE.sourcelink.json
+C:\Users\An\Desktop\TrongD\FinalThesis\be\bin\Debug\net8.0\Newtonsoft.Json.dll
