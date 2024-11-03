@@ -1,8 +1,9 @@
+using System.ComponentModel;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
-[Route("api/CoinsData")]
+[Route("api/Coins")]
 [ApiController]
 public class CoinController : ControllerBase
 {
@@ -11,15 +12,12 @@ public class CoinController : ControllerBase
     {
         _mongoservice = mongoDBService;
     }
-    //get call coin from api method
-    //get allcoin call above method and then call from database
 
-    [HttpPost("Add1Coins")]
-    public async Task<IActionResult> AddCoins([FromBody] CoinModel coin)
+    [HttpDelete("delAllCoins")]
+    public async Task<IActionResult> DelAllCoins()
     {
-        await _mongoservice.AddCoins(coin);
-        return CreatedAtAction(nameof(AddCoins), new { id = coin.Id }, coin);
-
+        await _mongoservice.DeleteCoinsAsync();
+        return Ok("Delete all succesfully");
     }
 
     [HttpGet("getCoins")]
@@ -27,27 +25,21 @@ public class CoinController : ControllerBase
     {
         var data = await _mongoservice.GetAllCoinAsync();
         return Ok(data);
-        /*
-        [HttpGet("getCoins")]
-public async Task<IActionResult> GetCoins()
-{
-   try
-   {
-       var coins = await _mongoService.GetAllCoinsAsync();
-       if (coins == null || coins.Count == 0)
-       {
-           return NotFound("No coins found."); // Return 404 if no coins are found
-       }
 
-       return Ok(coins); // Return 200 OK with the list of coins
-   }
-   catch (Exception ex)
-   {
-       return StatusCode(500, $"Internal server error: {ex.Message}"); // Handle unexpected errors
-   }
-}
+    }
+    [HttpGet("GetCoinByName/{name}")]
+    public async Task<IActionResult> GetCoinByName([DefaultValue("btc")] string name)
+    {
+        var data = await _mongoservice.GetCoinByNameAsync(name);
+        return Ok(data);
+    }
 
-        */
+    [HttpPost("Add1Coins")]
+    public async Task<IActionResult> AddCoins(CoinModel coin)
+    {
+        await _mongoservice.AddCoins(coin);
+        return CreatedAtAction(nameof(AddCoins), new { id = coin.Id }, coin);
+
     }
     [HttpPost("addCoins")]
     public async Task<IActionResult> AddCoins()

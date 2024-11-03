@@ -72,3 +72,6 @@ C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\Microsoft.Extensions.
 C:\Users\An\Desktop\TrongD\FinalThesis\BE\bin\Debug\net8.0\System.Security.Permissions.dll
 C:\Users\An\Desktop\TrongD\FinalThesis\BE\obj\Debug\net8.0\BE.sourcelink.json
 C:\Users\An\Desktop\TrongD\FinalThesis\be\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\be\bin\Debug\net8.0\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\be\bin\Debug\net8.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\be\bin\Debug\net8.0\Newtonsoft.Json.Bson.dll

@@ -1,27 +1,45 @@
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 [BsonIgnoreExtraElements]
 public class TransactionModel
 {
+    public enum TrxType
+    {
+        [EnumMember(Value = "Buy")]
+        Buy,
+        [EnumMember(Value = "Sell")]
+        Sell,
+        [EnumMember(Value = "Convert")]
+        Convert,
+        [EnumMember(Value = "Deposit")]
+        Deposit,
+        [EnumMember(Value = "Withdraw")]
+        Withdraw
+    }
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
-
     [BsonElement("userId")]
-    public ObjectId UserId { get; set; }
+    [DefaultValue("67260d795577ce6acec7b318")]
+    public string UserId { get; set; }
 
     [BsonElement("trxType")]
-    public string? trxType { get; set; } // sell /buy/ convert
+    [EnumDataType(typeof(TrxType), ErrorMessage = "only accept given value")]
+    public TrxType trxType { get; set; } // sell /buy/ convert
     [BsonElement("buySource")]
-    public string? buySource { get; set; }   // usd or convert from other
+    [DefaultValue("USD")]
+    public string? buySource { get; set; } = "Usd";  // usd or convert from other
 
     [BsonElement("coinId")]
-    public ObjectId coinId { get; set; }
+    public string? coinId { get; set; }
 
     [BsonElement("quantity")]
-    public float quantity { get; set; }
-    [BsonElement("totalAmount")]
-    public float totalAmount { get; set; }
+    public float quantity { get; set; } = 0;
     [BsonElement("notes")]
     public string? notes { get; set; }
     [BsonElement("CreateAt")]

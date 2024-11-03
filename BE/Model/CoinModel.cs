@@ -4,7 +4,8 @@ using MongoDB.Bson.Serialization.Attributes;
 
 public class CoinModel
 {
-
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
     [BsonElement("symbol")]
     public string? Symbol { get; set; }
@@ -16,40 +17,40 @@ public class CoinModel
     public string? Image { get; set; }
 
     [BsonElement("currentPrice")]
-    public float? CurrentPrice { get; set; }
+    public decimal current_price { get; set; } = 0;
 
     [BsonElement("marketCap")]
-    public float? MarketCap { get; set; }
+    public decimal? market_cap { get; set; }
 
     [BsonElement("volume")]
-    public float? Volume { get; set; }
+    public decimal? total_volume { get; set; }
 
     [BsonElement("high24h")]
-    public float? High24h { get; set; }
+    public decimal? high_24h { get; set; }
 
     [BsonElement("low24h")]
-    public float? Low24h { get; set; }
+    public decimal? low_24h { get; set; }
 
     [BsonElement("pricechange24h")]
-    public float? PriceChange24h { get; set; }
+    public decimal? price_change_24h { get; set; }
 
     [BsonElement("percentchange24h")]
-    public float? PercentChange24h { get; set; }
+    public decimal? price_change_percentage_24h { get; set; }
 
     [BsonElement("circulating_supply")]
-    public float? CirculatingSupply { get; set; }
+    public decimal? circulating_supply { get; set; }
 
     [BsonElement("totalsupply")]
-    public float? TotalSupply { get; set; }
+    public decimal? total_supply { get; set; }
 
     [BsonElement("maxsupply")]
-    public float? MaxSupply { get; set; }
+    public decimal? max_supply { get; set; }
 
     [BsonElement("alltimehigh")]
-    public float? AllTimeHigh { get; set; }
+    public decimal? ath { get; set; }
 
     [BsonElement("alltimelow")]
-    public float? AllTimeLow { get; set; }
+    public decimal? atl { get; set; }
 
     [BsonElement("UpdateAt")]
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]

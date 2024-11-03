@@ -10,12 +10,11 @@ public class FavoriteListModel
     public string? Id { get; set; }
 
     [BsonElement("userId")]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public ObjectId? UserId { get; set; }
+    public string? UserId { get; set; }
 
     [BsonElement("favoriteList")]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public List<ObjectId>? FavoriteList { get; set; }
+
+    public List<string>? FavoriteList { get; set; }
 
     [BsonElement("updatedAt")]
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
