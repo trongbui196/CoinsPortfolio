@@ -1,17 +1,17 @@
 public class PortfolioDto
 {
-    public string UserId { get; set; }
-    public int NumberofTokenHold { get; set; }
+    public string? UserId { get; set; }
+    public int? NumberofTokenHold { get; set; }
     public List<portfolioCoinDto>? Assets { get; set; }
-    public decimal AssetMoney { get; set; } // in usd
-    public decimal? changeTotal { get; set; }
+    public double? AssetMoney { get; set; } // in usd
+    public double? changeTotal { get; set; }
 }
 public class portfolioCoinDto
 {
-    public string CoinName { get; set; }
-    public decimal TotalQuantity { get; set; }
-    public decimal AveragePrice { get; set; }
-    public decimal CurrentValue { get; set; }
-    public decimal Change { get; set; } = 0; //profit or loss in % 
+    public string? CoinName { get; set; }
+    public double? TotalQuantity { get; set; }
+    public double? AveragePrice { get; set; }
+    public double? CurrentValue { get; set; }
+    public double? Change { get; set; } = 0; //profit or loss in % 
 
 }

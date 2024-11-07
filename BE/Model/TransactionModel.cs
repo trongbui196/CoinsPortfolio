@@ -26,23 +26,29 @@ public class TransactionModel
     public string? Id { get; set; }
     [BsonElement("userId")]
     [DefaultValue("67260d795577ce6acec7b318")]
-    public string UserId { get; set; }
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? UserId { get; set; }
 
     [BsonElement("trxType")]
-    [EnumDataType(typeof(TrxType), ErrorMessage = "only accept given value")]
-    public TrxType trxType { get; set; } // sell /buy/ convert
+    [EnumDataType(typeof(TrxType), ErrorMessage = "only accept given value ( 0,1,2 )")]
+    public TrxType trxType { get; set; } = 0;// sell /buy/ convert
     [BsonElement("buySource")]
     [DefaultValue("USD")]
     public string? buySource { get; set; } = "Usd";  // usd or convert from other
 
     [BsonElement("coinId")]
+    [BsonRepresentation(BsonType.ObjectId)]
     public string? coinId { get; set; }
+    [BsonElement("coinPrice")]
+    [BsonRepresentation(BsonType.Double)]
+    public double? coinPrice { get; set; }
 
     [BsonElement("quantity")]
-    public float quantity { get; set; } = 0;
+    [BsonRepresentation(BsonType.Double)]
+
+    public double? quantity { get; set; }
     [BsonElement("notes")]
     public string? notes { get; set; }
     [BsonElement("CreateAt")]
-
     public DateTime CreateAt { get; set; }
 }

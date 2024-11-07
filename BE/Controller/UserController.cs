@@ -64,6 +64,7 @@ public class UserController : ControllerBase
         var data = await _mongoservice.GetAllTrxAsync();
         return Ok(data);
     }
+
     [HttpGet("/{userid}/Trxs")]
     public async Task<IActionResult> GetTrxsbyUser([DefaultValue("67260d795577ce6acec7b318")] string userid)
     {
@@ -82,11 +83,29 @@ public class UserController : ControllerBase
         await _mongoservice.addTrxAsync(trx);
         return Ok("trx added success");
     }
+    [HttpPost("/addTrxManual")]
+    public async Task<IActionResult> NewTrxManual([FromBody] TransactionModel trx)
+    {
+        await _mongoservice.addTrxManuallyAsync(trx);
+        return Ok("trx added manually success");
+    }
     [HttpDelete("/{userid}/Trx/{trxid}")]
     public async Task<IActionResult> DelTrx(string trxid)
     {
         await _mongoservice.DeleteTrxAsync(trxid);
         return Ok("del success");
+    }
+    [HttpGet("getPortfolio")]
+    public async Task<IActionResult> getuserPortfolio(string userid)
+    {
+        var data = await _mongoservice.GetPortfolioAsync(userid);
+        return Ok(data);
+    }
+    [HttpPost("CreatePort")]
+    public async Task<IActionResult> CreatePort(string userid)
+    {
+        await _mongoservice.InitPort(userid);
+        return Ok($"Port created for {userid}");
     }
 
 }

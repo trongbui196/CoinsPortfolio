@@ -17,40 +17,40 @@ public class CoinModel
     public string? Image { get; set; }
 
     [BsonElement("currentPrice")]
-    public decimal current_price { get; set; } = 0;
+    public double? current_price { get; set; }
 
     [BsonElement("marketCap")]
-    public decimal? market_cap { get; set; }
+    public double? market_cap { get; set; }
 
     [BsonElement("volume")]
-    public decimal? total_volume { get; set; }
+    public double? total_volume { get; set; }
 
     [BsonElement("high24h")]
-    public decimal? high_24h { get; set; }
+    public double? high_24h { get; set; }
 
     [BsonElement("low24h")]
-    public decimal? low_24h { get; set; }
+    public double? low_24h { get; set; }
 
     [BsonElement("pricechange24h")]
-    public decimal? price_change_24h { get; set; }
+    public double? price_change_24h { get; set; }
 
     [BsonElement("percentchange24h")]
-    public decimal? price_change_percentage_24h { get; set; }
+    public double? price_change_percentage_24h { get; set; }
 
     [BsonElement("circulating_supply")]
-    public decimal? circulating_supply { get; set; }
+    public double? circulating_supply { get; set; }
 
     [BsonElement("totalsupply")]
-    public decimal? total_supply { get; set; }
+    public double? total_supply { get; set; }
 
     [BsonElement("maxsupply")]
-    public decimal? max_supply { get; set; }
+    public double? max_supply { get; set; }
 
     [BsonElement("alltimehigh")]
-    public decimal? ath { get; set; }
+    public double? ath { get; set; }
 
     [BsonElement("alltimelow")]
-    public decimal? atl { get; set; }
+    public double? atl { get; set; }
 
     [BsonElement("UpdateAt")]
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
