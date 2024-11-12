@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using MongoDB.Driver;
 using MongoDB.Bson;
+using Microsoft.VisualBasic;
 
 public class MongoDBService
 {
@@ -189,36 +190,100 @@ public class MongoDBService
     // get all
     // get details
     // get all from user
-    public async Task<PortfolioModel> AddtoPort(TransactionModel trx)
+    public async Task<PortfolioModel> AddtoPortManual(TransactionModel trx)
     {
         var coin = await _CoinCollection.Find(x => x.Id == trx.coinId).FirstOrDefaultAsync();
         var port = await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
-        var coininPort = await _PortfolioCoinCollection.Find(x => x.portId == port.portId).FirstOrDefaultAsync();
+        var coinfilter = Builders<PortfolioCoinModel>.Filter.And(
+            Builders<PortfolioCoinModel>.Filter.Eq(x => x.coinId, trx.coinId),
+            Builders<PortfolioCoinModel>.Filter.Eq(x => x.portId, port.portId)
+        );
+        var coininPort = await _PortfolioCoinCollection.Find(coinfilter).FirstOrDefaultAsync();
+        //var coininPort = await _PortfolioCoinCollection.Find(x => x.portId == port.portId).FirstOrDefaultAsync();
         if (coininPort == null)
         {
+            Console.WriteLine("coininport null");
+
+            var data = new PortfolioCoinModel
+            {
+                portId = port.portId,
+                coinId = trx.coinId,
+                totalQuantity = trx.quantity,
+                totalMoney = trx.quantity * trx.coinPrice,
+                totalChange = trx.quantity * (coin.current_price - trx.coinPrice)
+            };
+            await _PortfolioCoinCollection.InsertOneAsync(data);
+            var filter = Builders<PortfolioModel>.Filter.Eq(x => x.userId, trx.UserId);
+            var update = Builders<PortfolioModel>.Update.Push(x => x.Assets, data.id);
+            await _PortCollection.UpdateOneAsync(filter, update);
+        }
+        else
+        {
+            var filter = Builders<PortfolioCoinModel>.Filter.Eq(x => x.id, coininPort.id);
+            var averesult = (coininPort.totalQuantity * coininPort.averagePrice + trx.quantity * trx.coinPrice) / (trx.quantity + coininPort.totalQuantity);
+            var update = Builders<PortfolioCoinModel>.Update.Combine(
+                Builders<PortfolioCoinModel>.Update.Inc(x => x.totalQuantity, trx.quantity),
+                Builders<PortfolioCoinModel>.Update.Inc(x => x.totalMoney, trx.quantity * trx.coinPrice),
+                Builders<PortfolioCoinModel>.Update.Inc(x => x.totalChange, trx.quantity * (coin.current_price - trx.coinPrice)),
+                Builders<PortfolioCoinModel>.Update.Set(x => x.averagePrice, averesult)
+            );
+            await _PortfolioCoinCollection.UpdateOneAsync(filter, update);
+        }
+        return await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
+    }
+    public async Task<PortfolioModel> AddtoPort(TransactionModel trx)
+    {
+        var coin = await _CoinCollection.Find(x => x.Id == trx.coinId).FirstOrDefaultAsync();
+        if (coin != null)
+            Console.WriteLine("4");
+        var port = await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
+        if (port != null)
+            Console.WriteLine("5");
+        var coinfilter = Builders<PortfolioCoinModel>.Filter.And(
+            Builders<PortfolioCoinModel>.Filter.Eq(x => x.coinId, trx.coinId),
+            Builders<PortfolioCoinModel>.Filter.Eq(x => x.portId, port.portId)
+        );
+        if (coinfilter != null)
+            Console.WriteLine("6");
+
+        var coininPort = await _PortfolioCoinCollection.Find(coinfilter).FirstOrDefaultAsync();
+        if (coininPort == null)
+        {
+            Console.WriteLine("null");
+
             var data = new PortfolioCoinModel
             {
                 portId = port.portId,
                 coinId = trx.coinId,
                 totalQuantity = trx.quantity,
                 totalMoney = trx.quantity * coin.current_price,
-                totalChange = trx.quantity * (coin.current_price - trx.coinPrice)
+                totalChange = trx.quantity * (coin.current_price - trx.coinPrice),
+                averagePrice = coin.current_price
             };
             await _PortfolioCoinCollection.InsertOneAsync(data);
             var filter = Builders<PortfolioModel>.Filter.Eq(x => x.userId, trx.UserId);
-            var update = Builders<PortfolioModel>.Update.Push(x => x.Assets, trx.coinId);
+            var update = Builders<PortfolioModel>.Update.Push(x => x.Assets, data.id);
             await _PortCollection.UpdateOneAsync(filter, update);
         }
         else
         {
-            coininPort.totalQuantity += trx.quantity;
-            coininPort.totalMoney += trx.quantity * trx.coinPrice;
-            coininPort.totalChange += trx.quantity * (coin.current_price - trx.coinPrice);
+            var averesult = (coininPort.totalQuantity * coininPort.averagePrice + trx.quantity * trx.coinPrice) / (trx.quantity + coininPort.totalQuantity);
+            var filter = Builders<PortfolioCoinModel>.Filter.Eq(x => x.id, coininPort.id);
+            var update = Builders<PortfolioCoinModel>.Update.Combine(
+                Builders<PortfolioCoinModel>.Update.Inc(x => x.totalQuantity, trx.quantity),
+                Builders<PortfolioCoinModel>.Update.Inc(x => x.totalMoney, trx.quantity * coin.current_price),
+                Builders<PortfolioCoinModel>.Update.Inc(x => x.totalChange, trx.quantity * (coin.current_price - trx.coinPrice)),
+                Builders<PortfolioCoinModel>.Update.Set(x => x.averagePrice, averesult)
+            );
+            await _PortfolioCoinCollection.UpdateOneAsync(filter, update);
         }
         return await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
     }
     public async Task<PortfolioModel> SelltoPort(TransactionModel trx)
     {
+        //     var coin = await _CoinCollection.Find(x => x.Id == trx.coinId).FirstOrDefaultAsync();
+        //     var port = await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
+        //     var coininPort = port.Assets.Find(x => x.)
         return null;
     }
     public async Task<PortfolioModel> ConvertInPort(TransactionModel trx)
@@ -229,10 +294,17 @@ public class MongoDBService
     public async Task addTrxAsync(TransactionModel trx)
     {
         var coin = await _CoinCollection.Find(x => x.Id == trx.coinId).FirstOrDefaultAsync();
+        if (coin != null)
+            Console.WriteLine("1");
+
         var port = await _PortCollection.Find(x => x.userId == trx.UserId.ToString()).FirstOrDefaultAsync();
+        if (port != null)
+            Console.WriteLine("2");
         switch (trx.trxType)
         {
-            case (TransactionModel.TrxType)0:
+            case 0:
+                Console.WriteLine("3");
+
                 await AddtoPort(trx);
                 break;
             case (TransactionModel.TrxType)1:
@@ -258,6 +330,18 @@ public class MongoDBService
     public async Task addTrxManuallyAsync(TransactionModel trx)
     {
         var coin = await _CoinCollection.Find(x => x.Id == trx.coinId).FirstOrDefaultAsync();
+        switch (trx.trxType)
+        {
+            case 0:
+                await AddtoPortManual(trx);
+                break;
+            case (TransactionModel.TrxType)1:
+                await SelltoPort(trx);
+                break;
+            case (TransactionModel.TrxType)2:
+                await ConvertInPort(trx);
+                break;
+        }
         var data = new TransactionModel
         {
             UserId = trx.UserId,
@@ -352,53 +436,70 @@ public class MongoDBService
         await _TransactionCollection.DeleteOneAsync(x => x.Id == trxid);
     }
     // 4/11 : use Aggregation for port data
-    public async Task<List<PortfolioDto>> GetPortfolioAsync(string userid)
+    public async Task<PortfolioDto> GetPortfolioAsync(string userid)
     {
-        var aggregationPipeline = new[]
+        var port = await _PortCollection.Find(x => x.userId == userid).FirstOrDefaultAsync();
+        if (port == null)
         {
-            new BsonDocument("$match", new BsonDocument("userId", userid)),
-            new BsonDocument("$group", new BsonDocument
-                {
-                    { "_id", "$coinName" },
-                    { "totalQuantity", new BsonDocument("$sum", "$quantity") },
-                    { "totalTransactionValue", new BsonDocument("$sum", new BsonDocument("$multiply", new BsonArray { "$quantity", "$coinPrice" })) },
-                    { "averageTransactionPrice", new BsonDocument("$avg", "$coinPrice") }
-                }
-            ),
-            new BsonDocument("$lookup", new BsonDocument
-                {
-                    { "from", "coins" },
-                    { "localField", "coinId" },
-                    { "foreignField", "_id" },
-                    { "as", "coinInfo" }
-                }
-            ),
-            new BsonDocument("$unwind", "$coinInfo"),
-            new BsonDocument("$addFields", new BsonDocument
-                {
-                    { "currentPrice", "$coinInfo.currentPrice" },
-                    { "valueChange", new BsonDocument("$multiply", new BsonArray
-                        {
-                            "$totalQuantity",
-                            new BsonDocument("$subtract", new BsonArray { "$coinInfo.currentPrice", "$averageTransactionPrice" })
-                        })
-                    }
-                }
-            ),
-            new BsonDocument("$project", new BsonDocument
-                {
-                    { "_id", 0 },
-                    { "coinName", "$_id" },
-                    { "totalQuantity", 1 },
-                    { "totalTransactionValue", 1 },
-                    { "currentPrice", 1 },
-                    { "valueChange", 1 }
-                }
-            )
-        };
+            Console.WriteLine("1");
+        }
+        Console.WriteLine(port.userId);
+        Console.WriteLine(port.Assets.Count);
 
-        var result = await _TransactionCollection.Aggregate<PortfolioDto>(aggregationPipeline).ToListAsync();
-        return result;
+        if (port.Assets.Count == 0)
+        {
+            Console.WriteLine(2);
+
+            var data = new PortfolioDto
+            {
+                Msg = "Empty"
+            };
+            return data;
+        }
+        else
+        {
+            Console.WriteLine(3);
+
+            var data2 = new List<portfolioCoinDto>();
+            Console.WriteLine("data 2: ", data2);
+
+            double? averageAsset = 0; //initial dep
+            double? curMoney = 0;
+            foreach (var coin in port.Assets)
+            {
+                Console.WriteLine(coin);
+                var portCoinInfo = await _PortfolioCoinCollection.Find(x => x.id == coin).FirstOrDefaultAsync();
+                var coinInfo = await _CoinCollection.Find(x => x.Id == portCoinInfo.coinId).FirstOrDefaultAsync();
+                data2.Add(new portfolioCoinDto
+                {
+                    CoinName = coinInfo.Name,
+                    TotalQuantity = portCoinInfo.totalQuantity,
+                    AveragePrice = portCoinInfo.averagePrice,
+                    CurrentValue = coinInfo.current_price,
+                    Change = portCoinInfo.totalQuantity * (coinInfo.current_price - portCoinInfo.averagePrice),
+                });
+                averageAsset += portCoinInfo.totalQuantity * portCoinInfo.averagePrice;
+                curMoney += portCoinInfo.totalQuantity * coinInfo.current_price;
+                Console.WriteLine($"total ave:{averageAsset} ");
+                Console.WriteLine($"total cur money: {curMoney}");
+
+            }
+
+            var data = new PortfolioDto
+            {
+                UserId = userid,
+                NumberofTokenHold = port.Assets.Count,
+                Assets = data2,
+                AssetMoney = averageAsset,
+                changeTotal = curMoney - averageAsset,
+                Msg = "success"
+            };
+
+            return data;
+        }
+
+
+
     }
     public async Task InitPort(string userid)
     {
@@ -418,6 +519,7 @@ public class MongoDBService
     // 06/11 : next time task: add notes to trxdto
     // 06/11 : change coinId in trx to objectId to do aggregation if possible 
     // 07/11: -> dont change to objectID, notes in trxdto added : create a port model to store ( so dont need to query mongo for port, based on trxtype to adjust port)
-    // Task: update add manual to match because addtrx take current price not price in trx
+
+
 
 }

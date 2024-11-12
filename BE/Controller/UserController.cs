@@ -96,7 +96,7 @@ public class UserController : ControllerBase
         return Ok("del success");
     }
     [HttpGet("getPortfolio")]
-    public async Task<IActionResult> getuserPortfolio(string userid)
+    public async Task<IActionResult> getuserPortfolio([DefaultValue("67260d795577ce6acec7b318")] string userid)
     {
         var data = await _mongoservice.GetPortfolioAsync(userid);
         return Ok(data);

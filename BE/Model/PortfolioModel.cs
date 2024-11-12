@@ -11,10 +11,14 @@ public class PortfolioModel
 }
 public class PortfolioCoinModel
 {
+    [BsonElement("portId")]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? id { get; set; }
     public string? portId { get; set; }
     public string? coinId { get; set; }
     public double? totalQuantity { get; set; }
     public double? totalMoney { get; set; }
     public double? totalChange { get; set; }
+    public double? averagePrice { get; set; }
 
 }

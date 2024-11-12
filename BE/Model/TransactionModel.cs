@@ -38,6 +38,7 @@ public class TransactionModel
 
     [BsonElement("coinId")]
     [BsonRepresentation(BsonType.ObjectId)]
+    [DefaultValue("6726004cd800267247bb5dac")]
     public string? coinId { get; set; }
     [BsonElement("coinPrice")]
     [BsonRepresentation(BsonType.Double)]
@@ -45,7 +46,7 @@ public class TransactionModel
 
     [BsonElement("quantity")]
     [BsonRepresentation(BsonType.Double)]
-
+    [DefaultValue(200)]
     public double? quantity { get; set; }
     [BsonElement("notes")]
     public string? notes { get; set; }

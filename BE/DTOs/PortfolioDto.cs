@@ -4,7 +4,8 @@ public class PortfolioDto
     public int? NumberofTokenHold { get; set; }
     public List<portfolioCoinDto>? Assets { get; set; }
     public double? AssetMoney { get; set; } // in usd
-    public double? changeTotal { get; set; }
+    public double? changeTotal { get; set; } // profit or loss
+    public string? Msg { get; set; }
 }
 public class portfolioCoinDto
 {
@@ -13,5 +14,6 @@ public class portfolioCoinDto
     public double? AveragePrice { get; set; }
     public double? CurrentValue { get; set; }
     public double? Change { get; set; } = 0; //profit or loss in % 
+
 
 }
