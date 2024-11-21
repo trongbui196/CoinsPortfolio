@@ -5,20 +5,35 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers().AddJsonOptions(options =>
+
+builder.Configuration.AddJsonFile("appsettings.json");
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+
+builder.Services.AddSingleton<MongoDBService>();
+builder.Services.AddSingleton<CoinServices>();
+builder.Services.AddSingleton<FavListService>();
+builder.Services.AddSingleton<PortfolioService>();
+builder.Services.AddSingleton<TransactionService>();
+builder.Services.AddSingleton<UserService>();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    }); ;
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api by Trong Bui", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Api by Trong Bui",
+        Version = "v1"
+    });
     c.SchemaFilter<EnumSchemaFilter>();
 });
+
 builder.Services.AddHttpClient();
-builder.Services.AddSingleton<MongoDBService>();
-
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -27,19 +42,21 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
+
 var app = builder.Build();
-app.UseCors("AllowAll");
+
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "First class API");
-    c.RoutePrefix = string.Empty;
-
-});
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "First class API");
+        c.RoutePrefix = string.Empty;
+    });
 }
 
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
