@@ -47,4 +47,16 @@ public class TransactionController : ControllerBase
         await _transactionService.DeleteTrxAsync(trxid);
         return Ok("del success");
     }
+    [HttpPost("{userid}/Deposit")]
+    public async Task<IActionResult> Deposit([DefaultValue("67260d795577ce6acec7b318")] string userid, double amount)
+    {
+        await _transactionService.DepositAsync(userid, amount);
+        return Ok("deposit success");
+    }
+    [HttpPost("{userid}/Withdraw")]
+    public async Task<IActionResult> Withdraw([DefaultValue("67260d795577ce6acec7b318")] string userid, double amount, string coinid)
+    {
+        await _transactionService.WithdrawAsync(userid, amount, coinid);
+        return Ok("withdraw success");
+    }
 }

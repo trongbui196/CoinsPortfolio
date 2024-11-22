@@ -18,7 +18,7 @@ public class PortfolioService : MongoDBService
         else
         {
             var data2 = new List<portfolioCoinDto>();
-            double? averageAsset = 0; //initial dep
+            double? averageAsset = 0;
             double? curMoney = 0;
             foreach (var coin in port.Assets)
             {
@@ -87,8 +87,13 @@ public class PortfolioService : MongoDBService
     }
     public async Task<PortfolioModel> AddtoPort(TransactionModel trx)
     {
+        Console.WriteLine($"AddtoPort called with userId: {trx.UserId}, coinId: {trx.coinId}, quantity: {trx.quantity}");
+
         var coin = await _CoinCollection.Find(x => x.Id == trx.coinId).FirstOrDefaultAsync();
         var port = await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
+
+        Console.WriteLine($"Found portfolio: {port?.portId}");
+
         var coinfilter = Builders<PortfolioCoinModel>.Filter.And(
             Builders<PortfolioCoinModel>.Filter.Eq(x => x.coinId, trx.coinId),
             Builders<PortfolioCoinModel>.Filter.Eq(x => x.portId, port.portId)
@@ -96,6 +101,7 @@ public class PortfolioService : MongoDBService
         var coininPort = await _PortfolioCoinCollection.Find(coinfilter).FirstOrDefaultAsync();
         if (coininPort == null)
         {
+            Console.WriteLine("Creating new portfolio coin entry");
             var data = new PortfolioCoinModel
             {
                 portId = port.portId,
@@ -112,6 +118,7 @@ public class PortfolioService : MongoDBService
         }
         else
         {
+            Console.WriteLine($"Updating existing portfolio coin entry: {coininPort.id}");
             var averesult = (coininPort.totalQuantity * coininPort.averagePrice + trx.quantity * trx.coinPrice) / (trx.quantity + coininPort.totalQuantity);
             var filter = Builders<PortfolioCoinModel>.Filter.Eq(x => x.id, coininPort.id);
             var update = Builders<PortfolioCoinModel>.Update.Combine(
@@ -126,8 +133,23 @@ public class PortfolioService : MongoDBService
     }
     public async Task<PortfolioModel> SelltoPort(TransactionModel trx)
     {
+        if (trx == null)
+        {
+            throw new ArgumentNullException(nameof(trx));
+        }
+
         var coin = await _CoinCollection.Find(x => x.Id == trx.coinId).FirstOrDefaultAsync();
+        if (coin == null)
+        {
+            throw new Exception($"Coin not found");
+        }
+
         var port = await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
+        if (port == null)
+        {
+            throw new Exception($"Portfolio not found");
+        }
+
         var coinfilter = Builders<PortfolioCoinModel>.Filter.And(
             Builders<PortfolioCoinModel>.Filter.Eq(x => x.coinId, trx.coinId),
             Builders<PortfolioCoinModel>.Filter.Eq(x => x.portId, port.portId)
@@ -162,20 +184,36 @@ public class PortfolioService : MongoDBService
 
         return await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
     }
-    public async Task<PortfolioModel> ConvertInPort(string portId, string coinA, string coinB, double coinAquantity)
+    public async Task<PortfolioModel> ConvertInPort(string userid, string coinA, string coinB, double coinAquantity)
     {
         // Get coin info for both coins
         var CoinA = await _CoinCollection.Find(x => x.Id == coinA).FirstOrDefaultAsync();
         var CoinB = await _CoinCollection.Find(x => x.Id == coinB).FirstOrDefaultAsync();
 
+        if (CoinA == null || CoinB == null)
+        {
+            throw new Exception("One or both coins not found");
+        }
+
         // Calculate conversion amounts
         var sellAmountUSD = coinAquantity * CoinA.current_price;
         var buyQuantityB = sellAmountUSD / CoinB.current_price;
 
-        // Create single convert transaction
-        var convertTrx = new TransactionModel
+        // Create sell transaction for CoinA
+        var sellTrx = new TransactionModel
         {
-            UserId = portId,
+            UserId = userid,
+            coinId = coinA,
+            quantity = coinAquantity,
+            coinPrice = CoinA.current_price,
+            trxType = TransactionModel.TrxType.Convert,
+            notes = $"Convert to {CoinB.Name}"
+        };
+
+        // Create buy transaction for CoinB
+        var buyTrx = new TransactionModel
+        {
+            UserId = userid,
             coinId = coinB,
             quantity = buyQuantityB,
             coinPrice = CoinB.current_price,
@@ -183,9 +221,13 @@ public class PortfolioService : MongoDBService
             notes = $"Convert from {CoinA.Name}"
         };
 
+        // For debugging, use string interpolation properly:
+        Console.WriteLine($"userid parameter: {userid}");
+        Console.WriteLine($"sellTrx.UserId: {sellTrx.UserId}");
+
         // Handle the conversion in portfolio
-        await SelltoPort(convertTrx);
-        return await AddtoPortManual(convertTrx);
+        await SelltoPort(sellTrx);
+        return await AddtoPort(buyTrx);
     }
     public async Task InitPort(string userid)
     {

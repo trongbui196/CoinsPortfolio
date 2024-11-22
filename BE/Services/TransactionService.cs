@@ -15,9 +15,13 @@ public class TransactionService : MongoDBService
         {
             case 0:
                 await _portService.AddtoPort(trx);
+                Console.WriteLine("add to port");
+
                 break;
             case (TransactionModel.TrxType)1:
                 await _portService.SelltoPort(trx);
+                Console.WriteLine("sell to port");
+
                 break;
 
         }
@@ -139,5 +143,46 @@ public class TransactionService : MongoDBService
     public async Task DeleteTrxAsync(string trxid)
     {
         await _TransactionCollection.DeleteOneAsync(x => x.Id == trxid);
+    }
+    public async Task DepositAsync(string userid, double amount)
+    {
+        var port = await _PortCollection.Find(x => x.userId == userid).FirstOrDefaultAsync();
+        var coin = await _CoinCollection.Find(x => x.Id == "6726004cd800267247bb5dae").FirstOrDefaultAsync();
+        var data = new TransactionModel
+        {
+            UserId = userid,
+            trxType = TransactionModel.TrxType.Deposit,
+            buySource = "Bank",
+            coinId = "6726004cd800267247bb5dae", // mac dinh la usdt
+            coinPrice = coin.current_price,
+            quantity = amount,
+            notes = "Deposit from bank",
+            CreateAt = DateTime.Now
+        };
+        await _portService.AddtoPort(data);
+        await _TransactionCollection.InsertOneAsync(data);
+    }
+    public async Task WithdrawAsync(string userid, double amount, string coinid)
+    {
+        var port = await _PortCollection.Find(x => x.userId == userid).FirstOrDefaultAsync();
+        var coin = await _CoinCollection.Find(x => x.Id == coinid).FirstOrDefaultAsync();
+        var coininPort = await _PortfolioCoinCollection.Find(x => x.portId == port.portId && x.coinId == coinid).FirstOrDefaultAsync();
+        if (coininPort.totalQuantity < amount)
+        {
+            throw new ArgumentException("Not enough coin in port");
+        }
+        var trxdata = new TransactionModel
+        {
+            UserId = userid,
+            trxType = TransactionModel.TrxType.Withdraw,
+            buySource = "Bank",
+            coinId = coinid,
+            coinPrice = coin.current_price,
+            quantity = amount,
+            notes = "Withdraw to bank",
+            CreateAt = DateTime.Now
+        };
+        await _portService.SelltoPort(trxdata);
+        await _TransactionCollection.InsertOneAsync(trxdata);
     }
 }

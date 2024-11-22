@@ -30,9 +30,9 @@ public class PorfolioController : ControllerBase
         return Ok($"{coinid} removed from {userid}'s port");
     }
     [HttpPost("ConvertInPort")]
-    public async Task<IActionResult> ConvertInPort(string portId, string coinA, string coinB, double coinAquantity)
+    public async Task<IActionResult> ConvertInPort([DefaultValue("67260d795577ce6acec7b318")] string userid, [DefaultValue("6726004cd800267247bb5dac")] string coinA, [DefaultValue("6726004cd800267247bb5dad")] string coinB, [DefaultValue(200)] double coinAquantity)
     {
-        await _portfolioService.ConvertInPort(portId, coinA, coinB, coinAquantity);
-        return Ok($"{coinA} converted to {coinB} in {portId}");
+        await _portfolioService.ConvertInPort(userid, coinA, coinB, coinAquantity);
+        return Ok($"{coinA} converted to {coinB} for user {userid}");
     }
 }
