@@ -71,6 +71,16 @@ public class CoinController : ControllerBase
         await _coinServices.DeleteCoinAsync(id);
         return Ok("Delete coin succesfully");
     }
-
-
+    [HttpGet("get20Coin")]
+    public async Task<IActionResult> Get20Coin()
+    {
+        var data = await _coinServices.Get20CoinAsync();
+        return Ok(data);
+    }
+    [HttpGet("getTop5Gainers")]
+    public async Task<IActionResult> GetTop5Gainers()
+    {
+        var data = await _coinServices.GetTop5GainersAsync();
+        return Ok(data);
+    }
 }

@@ -1,11 +1,10 @@
 using MongoDB.Driver;
 using Newtonsoft.Json;
-
+using BE.Services;
 public class UserService : MongoDBService
 {
 
     private readonly FavListService _favListService;
-
     public UserService(IConfiguration iconfig, FavListService favListService) : base(iconfig)
     {
         _favListService = favListService;
@@ -14,9 +13,9 @@ public class UserService : MongoDBService
     {
         return await _UserCollection.Find(item => true).ToListAsync();
     }
-    public async Task<UserModel> GetUserByPhoneAsync(string phone)
+    public async Task<UserModel> GetUserByUsernameAsync(string username)
     {
-        return await _UserCollection.Find(x => x.PhoneNumber == phone).FirstOrDefaultAsync();
+        return await _UserCollection.Find(x => x.userName == username).FirstOrDefaultAsync();
     }
     public async Task AddUserAsync(UserModel user)
     {
@@ -36,5 +35,8 @@ public class UserService : MongoDBService
         .Set(x => x.Email, email);
         await _UserCollection.UpdateOneAsync(filter, update);
     }
-
+    public async Task<UserModel> GetUserByIdAsync(string id)
+    {
+        return await _UserCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    }
 }

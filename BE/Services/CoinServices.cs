@@ -9,6 +9,15 @@ public class CoinServices : MongoDBService
     {
         return await _CoinCollection.Find(_ => true).ToListAsync();
     }
+    public async Task<List<CoinModel>> Get20CoinAsync()
+    {
+        return await _CoinCollection.Find(_ => true).Limit(20).ToListAsync();
+    }
+    // get 5 coin in colelction order by percentchange24h
+    public async Task<List<CoinModel>> GetTop5GainersAsync()
+    {
+        return await _CoinCollection.Find(_ => true).SortByDescending(x => x.price_change_percentage_24h).Limit(5).ToListAsync();
+    }
     public async Task<CoinModel> GetCoinbyNameAsync(string name)
     {
         var data = await _CoinCollection.Find(x => x.Name == name).FirstOrDefaultAsync();
@@ -51,7 +60,7 @@ public class CoinServices : MongoDBService
     }
     public async Task<List<CoinModel>> FetchCoinsFromApi()
     {
-        string url = $"{_baseUrl}coins/markets?vs_currency=usd&order=market_cap_desc&per_page=25&price_change_percentage=24h?x_cg_demo_api_key={_apiKey}";
+        string url = $"{_baseUrl}coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&price_change_percentage=24h?x_cg_demo_api_key={_apiKey}";
         Console.WriteLine(url);
         using var httpClient = new HttpClient();
         var response = await httpClient.GetStringAsync(url);

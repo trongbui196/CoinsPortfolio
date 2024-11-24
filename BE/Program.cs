@@ -1,8 +1,12 @@
 using System.Text.Json.Serialization;
+using BE.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,11 +15,12 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 builder.Services.AddSingleton<MongoDBService>();
 builder.Services.AddSingleton<CoinServices>();
+builder.Services.AddSingleton<AdminService>();
 builder.Services.AddSingleton<FavListService>();
 builder.Services.AddSingleton<PortfolioService>();
 builder.Services.AddSingleton<TransactionService>();
 builder.Services.AddSingleton<UserService>();
-
+builder.Services.AddSingleton<JwtService>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -30,17 +35,85 @@ builder.Services.AddSwaggerGen(c =>
         Title = "Api by Trong Bui",
         Version = "v1"
     });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
     c.SchemaFilter<EnumSchemaFilter>();
 });
 
 builder.Services.AddHttpClient();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        builder => builder
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+    options.AddPolicy("AllowMultipleOrigins",
+        builder =>
+        {
+            builder
+                .WithOrigins(
+                    "http://localhost:3000",  // Customer UI port
+                    "http://localhost:3001"   // Admin UI port
+                )
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();  // If you're sending cookies or auth headers
+        });
+});
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = "http://localhost:5101",
+        ValidAudiences = new[] { "http://localhost:5101",
+                                "http://localhost:3001"   },
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+
+    // Add this for debugging
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+            return Task.CompletedTask;
+        },
+        OnMessageReceived = context =>
+        {
+            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            Console.WriteLine($"Received token: {token}");
+            return Task.CompletedTask;
+        }
+    };
 });
 
 var app = builder.Build();
@@ -56,8 +129,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseCors("AllowAll");
+app.UseCors("AllowMultipleOrigins");
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
