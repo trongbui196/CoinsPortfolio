@@ -34,8 +34,9 @@ const marketData = [
 
 export function MarketOverview() {
   return (
-    <section className="space-y-4">
-      <div className="flex justify-between items-center">
+    <section className="w-full container mx-auto p-4">
+      <h1 className="text-2xl font-bold text-red-500">Market Overview</h1>
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">
           Cryptocurrency Prices by Market Cap
         </h1>
@@ -48,9 +49,12 @@ export function MarketOverview() {
           </select>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div
+        className="grid w-full"
+        style={{ gridTemplateColumns: "repeat(4, 1fr)", gridGap: "1rem" }}
+      >
         {marketData.map((coin) => (
-          <Card key={coin.symbol} className="bg-card/50">
+          <Card key={coin.symbol} className="w-full">
             <CardContent className="p-4">
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2">
