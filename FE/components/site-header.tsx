@@ -20,16 +20,16 @@ export function SiteHeader() {
               Market
             </a>
             <a
-              href="#"
+              href="/portfolio"
               className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
             >
               Portfolio
             </a>
             <a
-              href="#"
+              href="/watchlist"
               className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
             >
-              Learn
+              Watchlist
             </a>
             <Button>Register</Button>
           </nav>

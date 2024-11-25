@@ -8,8 +8,9 @@ import PortfolioPage from "../Pages/PortfolioPage";
 function App() {
   return (
     <Router>
+      <SiteHeader />
+
       <div className="min-h-screen bg-background">
-        <SiteHeader />
         <Routes>
           <Route path="/" element={<MarketPage />} />
           <Route path="/coin/:symbol" element={<CoinPage />} />
