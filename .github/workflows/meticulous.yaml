@@ -60,6 +60,7 @@ jobs:
       - name: Build project
         run: |
           yarn build
+              tsc -p FE/tsconfig.json && vite build
 
       - name: Serve project
         # TODO: Update these commands to serve your app's frontend locally, and
