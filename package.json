@@ -9,5 +9,6 @@
     "react-router-dom": "^7.0.1"
   },
   "scripts": {
- "build": "babel src -d lib"  }
+    "build": "tsc -b && vite build"
+}
 }
