@@ -6,6 +6,10 @@ import {
   TextField, // for Input replacement
 } from "@mui/material";
 import React from "react";
+<<<<<<< HEAD
+=======
+
+>>>>>>> f70c86f8ae0825629ce9ba75851f5d68506b9b71
 import { Grid, List } from "lucide-react";
 
 export default function WatchlistPage() {
