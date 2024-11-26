@@ -21,7 +21,7 @@ async function startApp() {
 
 function isProduction() {
   // Update with your production domain
-  return window.location.hostname.indexOf("http://localhost:5173") > -1;
+  return window.location.hostname.indexOf("http://localhkost:5173") > -1;
 }
 
 startApp();

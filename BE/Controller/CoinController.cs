@@ -83,4 +83,10 @@ public class CoinController : ControllerBase
         var data = await _coinServices.GetTop5GainersAsync();
         return Ok(data);
     }
+    [HttpGet("getChartData/{symbol}")]
+    public async Task<IActionResult> GetChartData(string symbol, int period)
+    {
+        var data = await _coinServices.GetChartDataAsync(symbol, period);
+        return Ok(data);
+    }
 }

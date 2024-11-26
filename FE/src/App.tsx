@@ -4,7 +4,7 @@ import CoinPage from "../Pages/CoinDetailPage";
 import MarketPage from "../Pages/MarketPage";
 //import WatchlistPage from "../Pages/WatchlistPage";
 import PortfolioPage from "../Pages/PortfolioPage";
-
+//import WatchlistPage from "../Pages/Watchlistpage";
 function App() {
   return (
     <Router>
