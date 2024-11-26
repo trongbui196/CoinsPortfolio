@@ -22,7 +22,7 @@ export default function CoinDetailPage() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5101/api/Coins/GetCoinByName/${symbol}` //btc
+          `http://localhost:510/api/Coins/GetCoinByName/${symbol}` //btc
         );
         setCoinInfo(response.data);
       } catch (error) {
