@@ -7,5 +7,8 @@
     "@mui/x-charts": "^7.22.3",
     "lucide-react": "^0.460.0",
     "react-router-dom": "^7.0.1"
+  },
+  "scripts": {
+    "build": "npm run build"
   }
 }
