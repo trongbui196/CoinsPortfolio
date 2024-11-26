@@ -34,7 +34,7 @@ jobs:
     # In your CI/CD config
       - name: Install dependencies
         run: |
-          yarn install --frozen-lockfile=false
+          yarn
       
       - name: Checkout repository
         uses: actions/checkout@v4
