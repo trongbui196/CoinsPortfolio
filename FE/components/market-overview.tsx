@@ -1,77 +1,62 @@
 import { Card, CardContent } from "@mui/material";
-import { LineChart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const marketData = [
-  {
-    name: "Ethereum",
-    symbol: "ETH",
-    price: "$38,40.54",
-    change: "+0.12%",
-    icon: "🌐",
-  },
-  {
-    name: "Binance",
-    symbol: "BNB",
-    price: "$38,40.54",
-    change: "+0.12%",
-    icon: "🌐",
-  },
-  {
-    name: "Litecoin",
-    symbol: "LTC",
-    price: "$38,40.54",
-    change: "+0.12%",
-    icon: "🌐",
-  },
-  {
-    name: "Polygon",
-    symbol: "MATIC",
-    price: "$38,40.54",
-    change: "+0.12%",
-    icon: "🌐",
-  },
-];
+const marketData = await axios.get(
+  "http://localhost:5101/api/Coins/getTop5Gainers"
+);
 
 export function MarketOverview() {
+  const navigate = useNavigate();
+  const handleCoinClick = (symbol: string) => {
+    navigate(`/coin/${symbol.toLowerCase()}`);
+  };
   return (
     <section className="w-full container mx-auto p-4">
-      <h1 className="text-2xl font-bold text-red-500">Market Overview</h1>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">
-          Cryptocurrency Prices by Market Cap
-        </h1>
-        <div className="flex gap-2">
-          <select className="bg-background border rounded-md px-2 py-1 text-sm">
-            <option>Filter</option>
-          </select>
-          <select className="bg-background border rounded-md px-2 py-1 text-sm">
-            <option>Today</option>
-          </select>
-        </div>
+        <h1 className="text-2xl font-bold">Top Gainer Last 24hrs</h1>
+        <div className="flex gap-2"></div>
       </div>
       <div
         className="grid w-full"
-        style={{ gridTemplateColumns: "repeat(4, 1fr)", gridGap: "1rem" }}
+        style={{ gridTemplateColumns: "repeat(5, 1fr)", gridGap: "1rem" }}
       >
-        {marketData.map((coin) => (
+        {marketData.data.map((coin) => (
           <Card key={coin.symbol} className="w-full">
             <CardContent className="p-4">
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl">{coin.icon}</span>
+                  <img src={coin.image} alt={coin.name} className="w-8 h-8" />
                   <div>
-                    <div className="font-semibold">{coin.name}</div>
-                    <div className="text-sm text-muted-foreground">
+                    <div
+                      onClick={() => handleCoinClick(coin.symbol)}
+                      className="hover:text-blue-500 font-semibold cursor-pointer"
+                    >
+                      {coin.name}
+                    </div>
+                    <div className="text-sm text-muted-foreground uppercase">
                       {coin.symbol}
                     </div>
                   </div>
                 </div>
-                <div className="text-sm text-green-500">{coin.change}</div>
+                <div
+                  className={`text-sm ${
+                    coin.price_change_percentage_24h > 0
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  {coin.price_change_percentage_24h.toFixed(2)}%
+                </div>
               </div>
               <div className="mt-4">
-                <div className="text-2xl font-bold">{coin.price}</div>
-                <div className="h-[50px] mt-2">
-                  <LineChart className="w-full h-full text-blue-500" />
+                <div className="text-2xl font-bold">
+                  ${coin.current_price.toFixed(2)}
+                </div>
+                <div className="text-sm text-muted-foreground mt-1">
+                  24h Low: ${coin.low_24h.toFixed(2)}
+                  <br />
+                  24h High: ${coin.high_24h.toFixed(2)}
                 </div>
               </div>
             </CardContent>

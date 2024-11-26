@@ -5,7 +5,7 @@ import {
   Button,
   TextField, // for Input replacement
 } from "@mui/material";
-
+import React from "react";
 import { Grid, List } from "lucide-react";
 
 export default function WatchlistPage() {
