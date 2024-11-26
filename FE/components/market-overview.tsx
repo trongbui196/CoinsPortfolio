@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const marketData = await axios.get(
-  "http://localhost:5101/api/Coins/getTop5Gainers"
+  "http://localhost:5101/api/AllCoins/getTop5Gainers"
 );
 
 export function MarketOverview() {
