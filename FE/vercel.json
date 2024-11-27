@@ -5,10 +5,12 @@
       "use": "@vercel/node"
     }
   ],
-  "routes": [
+  redirects": [
     {
-      "src": "/(.*)",
-      "dest": "/"
+      "source": "/:match*",
+      "destination": "/index.html",
+      "permanent": false
     }
   ]
+
 }
