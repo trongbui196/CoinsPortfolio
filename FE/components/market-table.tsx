@@ -1,12 +1,23 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Grid, List } from "lucide-react";
+import { Search } from "lucide-react";
 import axios from "axios";
+
+interface Coin {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  current_price: number;
+  price_change_percentage_24h: number;
+  low_24h: number;
+  high_24h: number;
+}
+
 export function MarketTable() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("top-gainers");
   const [displayCount, setDisplayCount] = useState(20);
-  const [marketData, setMarketData] = useState([]);
+  const [marketData, setMarketData] = useState<Coin[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchMarketData = async (count: number) => {
@@ -17,7 +28,7 @@ export function MarketTable() {
           ? "http://localhost:5101/api/Coins/get20Coin"
           : "http://localhost:5101/api/Coins/getCoins";
 
-      const response = await axios.get(endpoint);
+      const response = await axios.get<Coin[]>(endpoint);
       setMarketData(response.data);
     } catch (error) {
       console.error("Failed to fetch market data:", error);

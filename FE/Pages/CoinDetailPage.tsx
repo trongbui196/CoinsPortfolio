@@ -12,9 +12,24 @@ import {
 } from "@mui/material";
 import { Star, TrendingUp } from "lucide-react";
 
+interface CoinDetail {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  current_price: number;
+  price_change_percentage_24h: number;
+  market_cap: number;
+  total_volume: number;
+  high_24h: number;
+  low_24h: number;
+  circulating_supply: number;
+  max_supply: number | null;
+}
+
 export default function CoinDetailPage() {
   const { symbol } = useParams();
-  const [coinInfo, setCoinInfo] = useState(null);
+  const [coinInfo, setCoinInfo] = useState<CoinDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isWatchlisted, setIsWatchlisted] = useState(false);
 
@@ -22,7 +37,7 @@ export default function CoinDetailPage() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:510/api/Coins/GetCoinByName/${symbol}` //btc
+          `http://localhost:5101/api/Coins/GetCoinByName/${symbol}` //btc
         );
         setCoinInfo(response.data);
       } catch (error) {
