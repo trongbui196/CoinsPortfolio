@@ -3,7 +3,7 @@ import { SiteHeader } from "../components/site-header";
 import CoinPage from "../Pages/CoinDetailPage";
 import MarketPage from "../Pages/MarketPage";
 import LandingPage from "../Pages/LandingPage";
-import WatchlistPage from "../Pages/WatchlistPage";
+import WListPage from "../Pages/WListPage";
 import PortfolioPage from "../Pages/PortfolioPage";
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/market" element={<MarketPage />} />
           <Route path="/coin/:symbol" element={<CoinPage />} />
-          <Route path="/watchlist" element={<WatchlistPage />} />
+          <Route path="/watchlist" element={<WListPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
         </Routes>
       </div>
