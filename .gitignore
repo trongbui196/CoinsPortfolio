@@ -1,8 +1,8 @@
 # --- ASP.NET Web API ---
 
 # Build Folders (Compiled Output)
-bin/
-obj/
+**bin/
+**obj/
 
 # User-specific files
 *.rsuser
