@@ -1,183 +1,184 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import {
   Card,
   CardContent,
-  Tabs,
-  Tab,
-  Box,
-  Typography,
   Container,
   Grid,
-  Select,
-  MenuItem,
-  IconButton,
+  Typography,
+  Button,
+  Box,
 } from "@mui/material";
-import { Star } from "lucide-react";
-import { useState } from "react";
-import { CandlestickChart } from "../VisualSupport/Candlestick";
-// Temporary placeholder components (you'll need to create these)
+import { Star, TrendingUp } from "lucide-react";
 
-const OrderBook = () => <div>Order Book</div>;
-const TradeHistory = () => <div>Trade History</div>;
+interface CoinDetail {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  current_price: number;
+  price_change_percentage_24h: number;
+  market_cap: number;
+  total_volume: number;
+  high_24h: number;
+  low_24h: number;
+  circulating_supply: number;
+  max_supply: number | null;
+}
 
-export default function CoinPage() {
-  const [currentTab, setCurrentTab] = useState("price");
-  const [timeframe, setTimeframe] = useState("24h");
+export default function CoinDetailPage() {
+  const { symbol } = useParams();
+  const [coinInfo, setCoinInfo] = useState<CoinDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isWatchlisted, setIsWatchlisted] = useState(false);
 
-  // Placeholder for your store functionality
-  const isFavorited = false;
-  const toggleFavorite = () => console.log("Toggle favorite");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5101/api/Coins/GetCoinByName/${symbol}` //btc
+        );
+        setCoinInfo(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const marketStats = {
-    price: "$43,975.72",
-    change24h: "+1.24%",
-    marketCap: "$826,445,951,378",
-    volume24h: "$22,822,762,169",
-    circulatingSupply: "19,958,437.00 BTC",
-  };
+    fetchData();
+  }, [symbol]);
+
+  if (isLoading || !coinInfo) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <Container sx={{ py: 3 }}>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
+    <Container sx={{ py: 4 }}>
+      {/* Coin Info Card */}
+      <Card sx={{ mb: 4 }}>
+        <CardContent>
+          <Grid container spacing={3}>
+            {/* Left Side */}
+            <Grid item xs={12} md={6}>
               <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  mb: 3,
-                }}
+                sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                  <Box
-                    sx={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: "50%",
-                      bgcolor: "primary.light",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    🌐
-                  </Box>
-                  <Box>
-                    <Typography variant="h5">Bitcoin</Typography>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      BTC
-                    </Typography>
-                  </Box>
-                  <IconButton onClick={toggleFavorite}>
-                    <Star color={isFavorited ? "#ffd700" : undefined} />
-                  </IconButton>
-                </Box>
-                <Box sx={{ textAlign: "right" }}>
-                  <Typography variant="h4">{marketStats.price}</Typography>
-                  <Typography
-                    variant="body2"
-                    color={
-                      marketStats.change24h.startsWith("+")
-                        ? "success.main"
-                        : "error.main"
-                    }
-                  >
-                    {marketStats.change24h}
-                  </Typography>
-                </Box>
+                <img
+                  src={coinInfo.image}
+                  alt={coinInfo.name}
+                  style={{ width: 48, height: 48 }}
+                />
+                <Typography variant="h4">{coinInfo.name}</Typography>
+                <Typography variant="h6" color="text.secondary">
+                  {coinInfo.symbol.toUpperCase()}
+                </Typography>
+                <Button
+                  variant="outlined"
+                  startIcon={<Star />}
+                  onClick={() => setIsWatchlisted(!isWatchlisted)}
+                >
+                  {isWatchlisted ? "Watchlisted" : "Add to Watchlist"}
+                </Button>
               </Box>
 
+              <Typography variant="h3" sx={{ mb: 2 }}>
+                ${coinInfo.current_price.toLocaleString()}
+              </Typography>
+
+              <Typography
+                variant="h6"
+                color={
+                  coinInfo.price_change_percentage_24h > 0 ? "green" : "red"
+                }
+              >
+                {coinInfo.price_change_percentage_24h > 0 ? "+" : ""}
+                {coinInfo.price_change_percentage_24h.toFixed(2)}%
+              </Typography>
+            </Grid>
+
+            {/* Right Side */}
+            <Grid item xs={12} md={6}>
               <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
-                  <Typography variant="body2" color="text.secondary">
-                    Market Cap
-                  </Typography>
-                  <Typography variant="body1">
-                    {marketStats.marketCap}
+                <Grid item xs={6}>
+                  <Typography color="text.secondary">Market Cap</Typography>
+                  <Typography variant="h6">
+                    ${coinInfo.market_cap.toLocaleString()}
                   </Typography>
                 </Grid>
-                <Grid item xs={12} md={4}>
-                  <Typography variant="body2" color="text.secondary">
-                    Volume (24h)
-                  </Typography>
-                  <Typography variant="body1">
-                    {marketStats.volume24h}
+                <Grid item xs={6}>
+                  <Typography color="text.secondary">24h Volume</Typography>
+                  <Typography variant="h6">
+                    ${coinInfo.total_volume.toLocaleString()}
                   </Typography>
                 </Grid>
-                <Grid item xs={12} md={4}>
-                  <Typography variant="body2" color="text.secondary">
+                <Grid item xs={6}>
+                  <Typography color="text.secondary">24h High</Typography>
+                  <Typography variant="h6">
+                    ${coinInfo.high_24h.toLocaleString()}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography color="text.secondary">24h Low</Typography>
+                  <Typography variant="h6">
+                    ${coinInfo.low_24h.toLocaleString()}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography color="text.secondary">
                     Circulating Supply
                   </Typography>
-                  <Typography variant="body1">
-                    {marketStats.circulatingSupply}
+                  <Typography variant="h6">
+                    {coinInfo.circulating_supply.toLocaleString()}{" "}
+                    {coinInfo.symbol.toUpperCase()}
                   </Typography>
                 </Grid>
+                <Grid item xs={6}>
+                  <Typography color="text.secondary">Max Supply</Typography>
+                  <Typography variant="h6">
+                    {coinInfo.max_supply
+                      ? coinInfo.max_supply.toLocaleString()
+                      : "N/A"}{" "}
+                    {coinInfo.symbol.toUpperCase()}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    fullWidth
+                    startIcon={<TrendingUp />}
+                    sx={{ mt: 2 }}
+                  >
+                    Trade {coinInfo.symbol.toUpperCase()}
+                  </Button>
+                </Grid>
               </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
 
-        <Grid item xs={12} lg={8}>
-          <Card>
-            <CardContent>
-              <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Tabs
-                    value={currentTab}
-                    onChange={(_, newValue) => setCurrentTab(newValue)}
-                  >
-                    <Tab label="Price" value="price" />
-                    <Tab label="Market Depth" value="depth" />
-                    <Tab label="Trades" value="trades" />
-                  </Tabs>
-                  <Select
-                    size="small"
-                    value={timeframe}
-                    onChange={(e) => setTimeframe(e.target.value)}
-                  >
-                    <MenuItem value="24h">24h</MenuItem>
-                    <MenuItem value="7d">7d</MenuItem>
-                    <MenuItem value="30d">30d</MenuItem>
-                  </Select>
-                </Box>
-              </Box>
-
-              {currentTab === "price" && <CandlestickChart />}
-              {currentTab === "depth" && <div>Market depth chart</div>}
-              {currentTab === "trades" && <div>Trade view</div>}
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} lg={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Order Book
-              </Typography>
-              <OrderBook />
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Trade History
-              </Typography>
-              <TradeHistory />
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+      {/* Chart Card - Placeholder */}
+      <Card>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Price Chart
+          </Typography>
+          <Box
+            sx={{
+              height: 400,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            Chart Coming Soon
+          </Box>
+        </CardContent>
+      </Card>
     </Container>
   );
 }

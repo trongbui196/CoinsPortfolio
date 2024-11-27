@@ -1,92 +1,61 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LineChart, Star, Search, Grid, List } from "lucide-react";
+import { Search } from "lucide-react";
+import axios from "axios";
 
-const marketData = [
-  {
-    id: "bitcoin",
-    name: "Bitcoin",
-    symbol: "BTC",
-    price: "$44,975.72",
-    change: "+0.80%",
-    high24h: "$44,727.80",
-    low24h: "$43,318.84",
-    icon: "🌐",
-  },
-  {
-    id: "ethereum",
-    name: "Ethereum",
-    symbol: "ETH",
-    price: "$3,187.62",
-    change: "-2.79%",
-    high24h: "$3,263.16",
-    low24h: "$3,077.03",
-    icon: "🌐",
-  },
-  {
-    id: "binancecoin",
-    name: "Binance Coin",
-    symbol: "BNB",
-    price: "$392.32",
-    change: "+0.60%",
-    high24h: "$395.27",
-    low24h: "$389.64",
-    icon: "🌐",
-  },
-  {
-    id: "cardano",
-    name: "Cardano",
-    symbol: "ADA",
-    price: "$1.18",
-    change: "-0.33%",
-    high24h: "$1.21",
-    low24h: "$1.17",
-    icon: "🌐",
-  },
-  {
-    id: "solana",
-    name: "Solana",
-    symbol: "SOL",
-    price: "$112.13",
-    change: "+1.06%",
-    high24h: "$116.83",
-    low24h: "$110.66",
-    icon: "🌐",
-  },
-];
+interface Coin {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  current_price: number;
+  price_change_percentage_24h: number;
+  low_24h: number;
+  high_24h: number;
+}
 
 export function MarketTable() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("top-gainers");
+  const [displayCount, setDisplayCount] = useState(20);
+  const [marketData, setMarketData] = useState<Coin[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchMarketData = async (count: number) => {
+    setIsLoading(true);
+    try {
+      const endpoint =
+        count === 20
+          ? "http://localhost:5101/api/Coins/get20Coin"
+          : "http://localhost:5101/api/Coins/getCoins";
+
+      const response = await axios.get<Coin[]>(endpoint);
+      setMarketData(response.data);
+    } catch (error) {
+      console.error("Failed to fetch market data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMarketData(displayCount);
+  }, [displayCount]);
+
+  const handleDisplayCountChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const newCount = parseInt(event.target.value.replace("Show ", ""));
+    setDisplayCount(newCount);
+    fetchMarketData(newCount);
+  };
 
   const handleCoinClick = (symbol: string) => {
     navigate(`/coin/${symbol.toLowerCase()}`);
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden px-8">
       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex flex-wrap gap-2 mb-4">
-          {[
-            "Top Gainers",
-            "Top Loser",
-            "New in market",
-            "Top in trading",
-            "Top in Volume",
-          ].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab.toLowerCase().replace(/ /g, "-"))}
-              className={`px-3 py-1 text-sm rounded-full ${
-                activeTab === tab.toLowerCase().replace(/ /g, "-")
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
         <div className="flex justify-between items-center">
           <div className="relative">
             <input
@@ -100,95 +69,96 @@ export function MarketTable() {
             />
           </div>
           <div className="flex gap-2">
-            <select className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 text-sm">
+            <select
+              className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 text-sm"
+              value={`Show ${displayCount}`}
+              onChange={handleDisplayCountChange}
+            >
               <option>Show 20</option>
+              <option>Show 100</option>
             </select>
-            <button className="p-1 bg-gray-200 dark:bg-gray-700 rounded-md">
-              <Grid className="text-gray-600 dark:text-gray-400" size={18} />
-            </button>
-            <button className="p-1 bg-gray-200 dark:bg-gray-700 rounded-md">
-              <List className="text-gray-600 dark:text-gray-400" size={18} />
-            </button>
           </div>
         </div>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="bg-gray-100 dark:bg-gray-700">
-              <th className="text-left p-4 font-medium"></th>
-              <th className="text-left p-4 font-medium">Coin Name</th>
-              <th className="text-right p-4 font-medium">Price</th>
-              <th className="text-right p-4 font-medium">24h Change</th>
-              <th className="text-right p-4 font-medium">24h High</th>
-              <th className="text-right p-4 font-medium">24h Low</th>
-              <th className="text-right p-4 font-medium">Chart</th>
-            </tr>
-          </thead>
-          <tbody>
-            {marketData.map((coin) => (
-              <tr
-                key={coin.id}
-                className="border-b border-gray-200 dark:border-gray-700 last:border-0"
-              >
-                <td className="p-4">
-                  <button
-                    onClick={() => {}}
-                    className="text-gray-400 hover:text-yellow-400"
-                  >
-                    <Star className={`h-5 w-5 `} />
-                  </button>
-                </td>
-                <td className="p-4">
-                  <button
-                    className="flex items-center gap-2 hover:text-blue-500"
-                    onClick={() => handleCoinClick(coin.symbol)}
-                  >
-                    <span className="text-2xl">{coin.icon}</span>
-                    <div>
-                      <div className="font-medium">{coin.name}</div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        {coin.symbol}
-                      </div>
-                    </div>
-                  </button>
-                </td>
-                <td className="text-right p-4 font-medium">{coin.price}</td>
-                <td
-                  className={`text-right p-4 ${
-                    coin.change.startsWith("+")
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {coin.change}
-                </td>
-                <td className="text-right p-4">{coin.high24h}</td>
-                <td className="text-right p-4">{coin.low24h}</td>
-                <td className="text-right p-4">
-                  <LineChart className="w-24 h-8 ml-auto text-blue-500" />
-                </td>
+      {isLoading ? (
+        <div className="p-4 text-center">Loading...</div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gray-100 dark:bg-gray-700">
+                <th className="text-left p-4 font-medium">Asset</th>
+                <th className="text-right p-4 font-medium">Price</th>
+                <th className="text-right p-4 font-medium">24h Low</th>
+                <th className="text-right p-4 font-medium">24h High</th>
+                <th className="text-right p-4 font-medium">24h Change</th>
+                <th className="text-center p-4 font-medium">Chart</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {marketData.map((coin) => (
+                <tr
+                  key={coin.id}
+                  className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-600 dark:hover:bg-gray-750"
+                >
+                  <td className="p-4">
+                    <button
+                      className="flex items-center gap-3 hover:text-blue-500"
+                      onClick={() => handleCoinClick(coin.symbol)}
+                    >
+                      <img
+                        src={coin.image}
+                        alt={coin.name}
+                        className="w-12 h-12"
+                      />
+                      <div>
+                        <div className="text-lg text-white text-left">
+                          {coin.name}
+                        </div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400 text-left uppercase">
+                          {coin.symbol}
+                        </div>
+                      </div>
+                    </button>
+                  </td>
+                  <td className="text-right text-white p-4 font-medium">
+                    ${coin.current_price.toFixed(2)}
+                  </td>
+                  <td className="text-right text-white p-4">
+                    ${coin.low_24h.toFixed(2)}
+                  </td>
+                  <td className="text-right text-white p-4">
+                    ${coin.high_24h.toFixed(2)}
+                  </td>
+                  <td
+                    className={`text-right text-white p-4 font-medium ${
+                      coin.price_change_percentage_24h > 0
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {coin.price_change_percentage_24h.toFixed(2)}%
+                  </td>
+                  <td className="text-center p-4">
+                    <button
+                      className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                      onClick={() => handleCoinClick(coin.symbol)}
+                    >
+                      Chart
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
       <div className="p-4 border-t border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <div className="text-sm text-gray-500 dark:text-gray-400">
-            1-20 of 5,383 assets
+            1-{displayCount} of {marketData.length} assets
           </div>
-          <div className="flex gap-2">
-            <button
-              className="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md"
-              disabled
-            >
-              Previous
-            </button>
-            <button className="px-3 py-1 text-sm bg-blue-500 text-white rounded-md">
-              Next
-            </button>
-          </div>
+          <div className="flex gap-2"></div>
         </div>
       </div>
     </div>

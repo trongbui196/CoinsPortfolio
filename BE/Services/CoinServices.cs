@@ -20,7 +20,7 @@ public class CoinServices : MongoDBService
     }
     public async Task<CoinModel> GetCoinbyNameAsync(string name)
     {
-        var data = await _CoinCollection.Find(x => x.Name == name).FirstOrDefaultAsync();
+        var data = await _CoinCollection.Find(x => x.Symbol == name).FirstOrDefaultAsync();
         return data;
     }
     public async Task UpdateCoinAsync()
@@ -105,5 +105,26 @@ public class CoinServices : MongoDBService
         }
         await _CoinCollection!.InsertManyAsync(coinList);
     }
+    public async Task<ChartDataModel> GetChartDataAsync(string symbol, int days)
+    {
+        try
+        {   //symbol like 'bitcoin' 
+            string url = $"{_baseUrl}coins/{symbol}/market_chart?vs_currency=usd&days={days}&x_cg_demo_api_key={_apiKey}";
 
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetStringAsync(url);
+            var chartData = JsonConvert.DeserializeObject<ChartDataModel>(response);
+
+            if (chartData == null)
+            {
+                throw new Exception("Failed to fetch chart data from API");
+            }
+
+            return chartData;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error fetching chart data: {ex.Message}");
+        }
+    }
 }

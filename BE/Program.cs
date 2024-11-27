@@ -68,16 +68,16 @@ builder.Services.AddHttpClient();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowMultipleOrigins",
-        builder =>
+        policy =>
         {
-            builder
+            policy
                 .WithOrigins(
-                    "http://localhost:3000",  // Customer UI port
+                    "http://localhost:5173",  // Customer UI port
                     "http://localhost:3001"   // Admin UI port
                 )
                 .AllowAnyMethod()
                 .AllowAnyHeader()
-                .AllowCredentials();  // If you're sending cookies or auth headers
+                .AllowCredentials();  // For cookies/auth headers
         });
 });
 
@@ -118,6 +118,7 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
+app.UseCors("AllowMultipleOrigins");
 
 if (app.Environment.IsDevelopment())
 {
@@ -129,7 +130,6 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseCors("AllowMultipleOrigins");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
