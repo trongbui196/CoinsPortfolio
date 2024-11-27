@@ -1,16 +1,48 @@
 import { Card, CardContent } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useState, useEffect } from "react";
 
-const marketData = await axios.get(
-  "http://localhost:5101/api/aaaaCAllCoins/getTop5Gainers"
-);
+interface Coin {
+  symbol: string;
+  name: string;
+  image: string;
+  current_price: number;
+  price_change_percentage_24h: number;
+  low_24h: number;
+  high_24h: number;
+}
 
 export function MarketOverview() {
   const navigate = useNavigate();
+  const [marketData, setMarketData] = useState<Coin[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get<Coin[]>(
+          "http://localhost:5101/api/Coins/getTop5Gainers"
+        );
+        setMarketData(response.data);
+      } catch (error) {
+        console.error("Failed to fetch market data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const handleCoinClick = (symbol: string) => {
     navigate(`/coin/${symbol.toLowerCase()}`);
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <section className="w-full container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
@@ -21,7 +53,7 @@ export function MarketOverview() {
         className="grid w-full"
         style={{ gridTemplateColumns: "repeat(5, 1fr)", gridGap: "1rem" }}
       >
-        {marketData.data.map((coin) => (
+        {marketData.map((coin: Coin) => (
           <Card key={coin.symbol} className="w-full">
             <CardContent className="p-4">
               <div className="flex justify-between items-start">
