@@ -5,7 +5,7 @@
       "use": "@vercel/node"
     }
   ],
-  redirects": [
+  "redirects": [
     {
       "source": "/:match*",
       "destination": "/index.html",
