@@ -7,8 +7,7 @@ import {
 } from "@mui/material";
 
 import { Grid, List } from "lucide-react";
-
-export default function WatchlistPage() {
+export default function WListPage() {
   const watchlistData = [
     {
       name: "Bitcoin",
