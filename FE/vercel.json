@@ -5,11 +5,11 @@
       "use": "@vercel/node"
     }
   ],
-  "redirects": [
+ "redirects": [
     {
-      "src": "/(.*)",
-      "dest": "/"
+      "source": "/(.*)",
+      "destination": "/",
+      "permanent": false
     }
   ]
-
 }
