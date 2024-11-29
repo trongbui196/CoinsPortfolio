@@ -5,11 +5,18 @@
       "use": "@vercel/node"
     }
   ],
- "redirects": [
+"redirects": [
     {
       "source": "/(.*)",
       "destination": "/",
-      "permanent": false
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "host",
+          "value": "yourdomain.com"
+        }
+      ]
     }
   ]
 }
