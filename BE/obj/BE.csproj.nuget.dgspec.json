@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\BE\\BE.csproj": {}
+    "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\be\\BE.csproj": {}
   },
   "projects": {
-    "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\BE\\BE.csproj": {
+    "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\be\\BE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\BE\\BE.csproj",
+        "projectUniqueName": "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\be\\BE.csproj",
         "projectName": "BE",
-        "projectPath": "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\BE\\BE.csproj",
+        "projectPath": "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\be\\BE.csproj",
         "packagesPath": "C:\\Users\\An\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\BE\\obj\\",
+        "outputPath": "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\be\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\An\\AppData\\Roaming\\NuGet\\NuGet.Config",
