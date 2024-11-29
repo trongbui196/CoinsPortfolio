@@ -5,9 +5,9 @@
       "use": "@vercel/node"
     }
   ],
-  "redirects": [
+  "routes": [
     {
-      "src": "/(.*)",
+      "src": "/[^.]+",
       "dest": "/"
     }
   ]
