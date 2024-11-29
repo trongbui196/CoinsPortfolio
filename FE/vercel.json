@@ -7,9 +7,9 @@
   ],
   "redirects": [
     {
-      "source": "/(.*)",
-      "destination": "/",
-      "permanent": false
+      "src": "/(.*)",
+      "dest": "/"
     }
   ]
+
 }
