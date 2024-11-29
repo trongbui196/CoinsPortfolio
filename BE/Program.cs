@@ -72,7 +72,7 @@ builder.Services.AddCors(options =>
         {
             policy
                 .WithOrigins(
-                    "https://coins-portfolio-cyan.vercel.app/",  // Customer UI port
+                    "https://https://coins-portfolio-id1x6lctd-tofn001gmailcoms-projects.vercel.app/",  // Customer UI port
                     "http://localhost:3001"   // Admin UI port
                 )
                 .AllowAnyMethod()
