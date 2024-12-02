@@ -14,6 +14,7 @@ const Container = styled("div")({
 });
 
 const HelloText = styled("h1")({
+  fontFamily: "'Comfortaa', cursive",
   fontSize: "4rem",
   color: "#ffffff",
   textTransform: "uppercase",

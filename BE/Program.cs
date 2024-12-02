@@ -75,7 +75,7 @@ builder.Services.AddCors(options =>
                     "https://coins-portfolio-cyan.vercel.app",
                     "https://coins-portfolio-git-master-tofn001gmailcoms-projects.vercel.app",
                     "https://coins-portfolio-hcna1c8xu-tofn001gmailcoms-projects.vercel.app",
-                    "http://localhost:3001"
+                    "http://localhost:5173"
                 )
                 .AllowAnyMethod()
                 .AllowAnyHeader()

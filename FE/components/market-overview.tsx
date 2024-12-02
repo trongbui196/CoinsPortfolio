@@ -40,11 +40,11 @@ export function MarketOverview() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>; 
   }
 
   return (
-    <section className="w-full container mx-auto p-4">
+    <section className=" bg-white dark:bg-gray-800 w-full container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Top Gainer Last 24hrs</h1>
         <div className="flex gap-2"></div>
