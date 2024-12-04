@@ -39,11 +39,6 @@ interface ChartData {
 
 type ChartPeriod = 30 | 90 | 180 | 365;
 
-interface FavoriteListResponse {
-  userId: string;
-  favoriteList: string[];
-}
-
 export default function CoinDetailPage() {
   const { coinId } = useParams();
   const [coinInfo, setCoinInfo] = useState<CoinDetail | null>(null);
