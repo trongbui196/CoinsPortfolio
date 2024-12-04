@@ -39,7 +39,7 @@ public class TransactionController : ControllerBase
     public async Task<IActionResult> NewTrxManual([FromBody] TransactionModel trx)
     {
         await _transactionService.addTrxManuallyAsync(trx);
-        return CreatedAtAction(nameof(TrxDetail), new { userid = trx.UserId, trxid = trx.Id }, trx);
+        return Ok("add success");
     }
     [HttpDelete("{userid}/Trx/{trxid}")]
     public async Task<IActionResult> DelTrx(string trxid)

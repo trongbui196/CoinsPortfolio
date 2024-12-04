@@ -23,7 +23,7 @@ public class PortfolioService : MongoDBService
             foreach (var coin in port.Assets)
             {
                 var portCoinInfo = await _PortfolioCoinCollection.Find(x => x.id == coin).FirstOrDefaultAsync();
-                var coinInfo = await _CoinCollection.Find(x => x.Id == portCoinInfo.coinId).FirstOrDefaultAsync();
+                var coinInfo = await _CoinCollection.Find(x => x.CoinId == portCoinInfo.coinId).FirstOrDefaultAsync();
                 data2.Add(new portfolioCoinDto
                 {
                     CoinName = coinInfo.Name,
@@ -49,7 +49,7 @@ public class PortfolioService : MongoDBService
     }
     public async Task<PortfolioModel> AddtoPortManual(TransactionModel trx)
     {
-        var coin = await _CoinCollection.Find(x => x.Id == trx.coinId).FirstOrDefaultAsync();
+        var coin = await _CoinCollection.Find(x => x.CoinId == trx.coinId).FirstOrDefaultAsync();
         var port = await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
         var coinfilter = Builders<PortfolioCoinModel>.Filter.And(
             Builders<PortfolioCoinModel>.Filter.Eq(x => x.coinId, trx.coinId),
@@ -89,9 +89,9 @@ public class PortfolioService : MongoDBService
     {
         Console.WriteLine($"AddtoPort called with userId: {trx.UserId}, coinId: {trx.coinId}, quantity: {trx.quantity}");
 
-        var coin = await _CoinCollection.Find(x => x.Id == trx.coinId).FirstOrDefaultAsync();
+        var coin = await _CoinCollection.Find(x => x.CoinId == trx.coinId).FirstOrDefaultAsync();
         var port = await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
-
+        Console.WriteLine($"Found coin: {coin?.Name}");
         Console.WriteLine($"Found portfolio: {port?.portId}");
 
         var coinfilter = Builders<PortfolioCoinModel>.Filter.And(
@@ -138,7 +138,7 @@ public class PortfolioService : MongoDBService
             throw new ArgumentNullException(nameof(trx));
         }
 
-        var coin = await _CoinCollection.Find(x => x.Id == trx.coinId).FirstOrDefaultAsync();
+        var coin = await _CoinCollection.Find(x => x.CoinId == trx.coinId).FirstOrDefaultAsync();
         if (coin == null)
         {
             throw new Exception($"Coin not found");
@@ -187,9 +187,8 @@ public class PortfolioService : MongoDBService
     public async Task<PortfolioModel> ConvertInPort(string userid, string coinA, string coinB, double coinAquantity)
     {
         // Get coin info for both coins
-        var CoinA = await _CoinCollection.Find(x => x.Id == coinA).FirstOrDefaultAsync();
-        var CoinB = await _CoinCollection.Find(x => x.Id == coinB).FirstOrDefaultAsync();
-
+        var CoinA = await _CoinCollection.Find(x => x.CoinId == coinA).FirstOrDefaultAsync();
+        var CoinB = await _CoinCollection.Find(x => x.CoinId == coinB).FirstOrDefaultAsync();
         if (CoinA == null || CoinB == null)
         {
             throw new Exception("One or both coins not found");

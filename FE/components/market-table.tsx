@@ -5,6 +5,7 @@ import axios from "axios";
 
 interface Coin {
   id: string;
+  coinId: string;
   symbol: string;
   name: string;
   image: string;
@@ -49,19 +50,19 @@ export function MarketTable() {
     fetchMarketData(newCount);
   };
 
-  const handleCoinClick = (symbol: string) => {
-    navigate(`/coin/${symbol.toLowerCase()}`);
+  const handleCoinClick = (coinId: string) => {
+    navigate(`/coin/${coinId}`);
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden px-8">
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden px-8">
+      <div className="p-4 border-b border-gray-200">
         <div className="flex justify-between items-center">
           <div className="relative">
             <input
               type="text"
               placeholder="Search Coin Name"
-              className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              className="pl-10 pr-4 py-2 border border-gray-800 rounded-md bg-white text-black"
             />
             <Search
               className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -70,41 +71,51 @@ export function MarketTable() {
           </div>
           <div className="flex gap-2">
             <select
-              className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 text-sm"
+              className="bg-white text-black border border-gray-800 rounded-md px-2 py-1 text-sm"
               value={`Show ${displayCount}`}
               onChange={handleDisplayCountChange}
             >
-              <option>Show 20</option>
-              <option>Show 100</option>
+              <option className="bg-white text-black">Show 20</option>
+              <option className="text-black">Show 100</option>
             </select>
           </div>
         </div>
       </div>
       {isLoading ? (
-        <div className="p-4 text-center">Loading...</div>
+        <div className="p-4 text-center text-black">Loading...</div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full rounded-md">
             <thead>
-              <tr className="bg-gray-100 dark:bg-gray-700">
-                <th className="text-left p-4 font-medium">Asset</th>
-                <th className="text-right p-4 font-medium">Price</th>
-                <th className="text-right p-4 font-medium">24h Low</th>
-                <th className="text-right p-4 font-medium">24h High</th>
-                <th className="text-right p-4 font-medium">24h Change</th>
-                <th className="text-center p-4 font-medium">Chart</th>
+              <tr className="bg-orange-400 rounded-md">
+                <th className="text-left px-12 py-4 font-medium text-black">
+                  Name
+                </th>
+                <th className="text-right p-4 font-medium text-black">Price</th>
+                <th className="text-right p-4 font-medium text-black">
+                  24h Low
+                </th>
+                <th className="text-right p-4 font-medium text-black">
+                  24h High
+                </th>
+                <th className="text-right p-4 font-medium text-black">
+                  24h Change
+                </th>
+                <th className="text-center p-4 font-medium text-black">
+                  Chart
+                </th>
               </tr>
             </thead>
             <tbody>
               {marketData.map((coin) => (
                 <tr
                   key={coin.id}
-                  className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-600 dark:hover:bg-gray-750"
+                  className="border-b border-gray-300 hover:bg-orange-200"
                 >
                   <td className="p-4">
                     <button
                       className="flex items-center gap-3 hover:text-blue-500"
-                      onClick={() => handleCoinClick(coin.symbol)}
+                      onClick={() => handleCoinClick(coin.coinId)}
                     >
                       <img
                         src={coin.image}
@@ -112,26 +123,26 @@ export function MarketTable() {
                         className="w-12 h-12"
                       />
                       <div>
-                        <div className="text-lg text-white text-left">
+                        <div className="text-lg text-black text-left">
                           {coin.name}
                         </div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400 text-left uppercase">
-                          {coin.symbol}
+                        <div className="text-sm text-gray-500 text-left uppercase">
+                          {coin.coinId}
                         </div>
                       </div>
                     </button>
                   </td>
-                  <td className="text-right text-white p-4 font-medium">
+                  <td className="text-right text-black p-4 font-medium">
                     ${coin.current_price.toFixed(2)}
                   </td>
-                  <td className="text-right text-white p-4">
+                  <td className="text-right text-black p-4">
                     ${coin.low_24h.toFixed(2)}
                   </td>
-                  <td className="text-right text-white p-4">
+                  <td className="text-right text-black p-4">
                     ${coin.high_24h.toFixed(2)}
                   </td>
                   <td
-                    className={`text-right text-white p-4 font-medium ${
+                    className={`text-right p-4 font-medium ${
                       coin.price_change_percentage_24h > 0
                         ? "text-green-500"
                         : "text-red-500"
@@ -142,7 +153,7 @@ export function MarketTable() {
                   <td className="text-center p-4">
                     <button
                       className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-                      onClick={() => handleCoinClick(coin.symbol)}
+                      onClick={() => handleCoinClick(coin.coinId)}
                     >
                       Chart
                     </button>
@@ -153,9 +164,9 @@ export function MarketTable() {
           </table>
         </div>
       )}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+      <div className="p-4 border-t border-gray-200">
         <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-500 dark:text-gray-400">
+          <div className="text-sm text-gray-500">
             1-{displayCount} of {marketData.length} assets
           </div>
           <div className="flex gap-2"></div>

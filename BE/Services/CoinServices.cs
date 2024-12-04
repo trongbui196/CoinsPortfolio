@@ -13,26 +13,29 @@ public class CoinServices : MongoDBService
     {
         return await _CoinCollection.Find(_ => true).Limit(20).ToListAsync();
     }
-    // get 5 coin in colelction order by percentchange24h
     public async Task<List<CoinModel>> GetTop5GainersAsync()
     {
         return await _CoinCollection.Find(_ => true).SortByDescending(x => x.price_change_percentage_24h).Limit(5).ToListAsync();
     }
-    public async Task<CoinModel> GetCoinbyNameAsync(string name)
+    public async Task<CoinModel> GetCoinbyNameAsync(string coinid)
     {
-        var data = await _CoinCollection.Find(x => x.Symbol == name).FirstOrDefaultAsync();
+        var data = await _CoinCollection.Find(x => x.CoinId == coinid).FirstOrDefaultAsync();
         return data;
     }
-    public async Task UpdateCoinAsync()
+    public async Task<string> UpdateCoinAsync()
     {
         List<CoinModel> coinlist = await FetchCoinsFromApi();
+        var updated = 0;
         foreach (var coin in coinlist)
         {
-            var existcoin = await _CoinCollection.Find(x => x.Symbol == coin.Id).FirstOrDefaultAsync();
+            var existcoin = await _CoinCollection.Find(x => x.CoinId == coin.Id).FirstOrDefaultAsync();
             if (existcoin != null)
             {
+                Console.WriteLine($"found {existcoin.Name}");
+                updated++;
                 var filter = Builders<CoinModel>.Filter.Eq(x => x.Symbol, coin.Id);
                 var update = Builders<CoinModel>.Update
+                .Set(c => c.CoinId, coin.Id)
                 .Set(c => c.current_price, coin.current_price)
                 .Set(c => c.market_cap, coin.market_cap)
                 .Set(c => c.total_volume, coin.total_volume)
@@ -48,7 +51,10 @@ public class CoinServices : MongoDBService
                 .Set(c => c.UpdateAt, DateTime.Now);
                 await _CoinCollection!.UpdateOneAsync(filter, update);
             }
+            else Console.WriteLine("found nothing");
+
         }
+        return $"updated {updated} coins";
     }
     public async Task DeleteCoinAsync(string id)
     {
@@ -83,21 +89,22 @@ public class CoinServices : MongoDBService
         {
             var data = new CoinModel
             {
+                CoinId = coin.Id,
                 Symbol = coin.Symbol,
                 Name = coin.Name,
                 Image = coin.Image,
-                current_price = coin.current_price,
-                market_cap = coin.market_cap,
-                total_volume = coin.total_volume,
-                high_24h = coin.high_24h,
-                low_24h = coin.low_24h,
-                price_change_24h = coin.price_change_24h,
-                price_change_percentage_24h = coin.price_change_percentage_24h,
-                circulating_supply = coin.circulating_supply,
-                total_supply = coin.total_supply,
-                max_supply = coin.max_supply,
-                ath = coin.ath,
-                atl = coin.atl,
+                current_price = coin.current_price ?? 0,
+                market_cap = coin.market_cap ?? 0,
+                total_volume = coin.total_volume ?? 0,
+                high_24h = coin.high_24h ?? 0,
+                low_24h = coin.low_24h ?? 0,
+                price_change_24h = coin.price_change_24h ?? 0,
+                price_change_percentage_24h = coin.price_change_percentage_24h ?? 0,
+                circulating_supply = coin.circulating_supply ?? 0,
+                total_supply = coin.total_supply ?? 0,
+                max_supply = coin.max_supply ?? 0,
+                ath = coin.ath ?? 0,
+                atl = coin.atl ?? 0,
                 UpdateAt = DateTime.Now
             };
             coinList.Add(data);
@@ -105,11 +112,11 @@ public class CoinServices : MongoDBService
         }
         await _CoinCollection!.InsertManyAsync(coinList);
     }
-    public async Task<ChartDataModel> GetChartDataAsync(string symbol, int days)
+    public async Task<ChartDataModel> GetChartDataAsync(string coinid, int days)
     {
         try
         {   //symbol like 'bitcoin' 
-            string url = $"{_baseUrl}coins/{symbol}/market_chart?vs_currency=usd&days={days}&x_cg_demo_api_key={_apiKey}";
+            string url = $"{_baseUrl}coins/{coinid}/market_chart?vs_currency=usd&days={days}&x_cg_demo_api_key={_apiKey}";
 
             using var httpClient = new HttpClient();
             var response = await httpClient.GetStringAsync(url);

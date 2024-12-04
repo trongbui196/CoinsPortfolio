@@ -15,7 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/market" element={<MarketPage />} />
-          <Route path="/coin/:symbol" element={<CoinPage />} />
+          <Route path="/coin/:coinId" element={<CoinPage />} />
           <Route path="/watchlist" element={<WListPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
         </Routes>

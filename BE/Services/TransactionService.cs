@@ -8,7 +8,9 @@ public class TransactionService : MongoDBService
     }
     public async Task addTrxAsync(TransactionModel trx)
     {
-        var coin = await _CoinCollection.Find(x => x.Id == trx.coinId).FirstOrDefaultAsync();
+        Console.WriteLine("add trx");
+
+        var coin = await _CoinCollection.Find(x => x.CoinId == trx.coinId).FirstOrDefaultAsync();
         var port = await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
 
         switch (trx.trxType)
@@ -40,7 +42,7 @@ public class TransactionService : MongoDBService
     }
     public async Task addTrxManuallyAsync(TransactionModel trx)
     {
-        var coin = await _CoinCollection.Find(x => x.Id == trx.coinId).FirstOrDefaultAsync();
+        var coin = await _CoinCollection.Find(x => x.CoinId == trx.coinId).FirstOrDefaultAsync();
         switch (trx.trxType)
         {
             case 0:
@@ -75,7 +77,7 @@ public class TransactionService : MongoDBService
         foreach (var data in trx)
         {
             var user = await _UserCollection.Find(x => x.Id == data.UserId).FirstOrDefaultAsync();
-            var coin = await _CoinCollection.Find(x => x.Id == data.coinId).FirstOrDefaultAsync();
+            var coin = await _CoinCollection.Find(x => x.CoinId == data.coinId).FirstOrDefaultAsync();
             var res = new TransactionDto
             {
                 TransactionId = data.Id,
@@ -100,7 +102,7 @@ public class TransactionService : MongoDBService
             Builders<TransactionModel>.Filter.Eq(x => x.UserId, userid)
         );
         var trx = await _TransactionCollection.Find(filter).FirstOrDefaultAsync() ?? throw new KeyNotFoundException("Transaction not found.");
-        var coin = await _CoinCollection.Find(x => x.Id == trx.coinId).FirstOrDefaultAsync();
+        var coin = await _CoinCollection.Find(x => x.CoinId == trx.coinId).FirstOrDefaultAsync();
         var res = new TransactionDto
         {
             TransactionId = trx.Id,
@@ -124,7 +126,7 @@ public class TransactionService : MongoDBService
         }
         foreach (var data in trx)
         {
-            var coin = await _CoinCollection.Find(x => x.Id == data.coinId).FirstOrDefaultAsync();
+            var coin = await _CoinCollection.Find(x => x.CoinId == data.coinId).FirstOrDefaultAsync();
             var res = new TransactionDto
             {
                 TransactionId = data.Id,
@@ -147,13 +149,13 @@ public class TransactionService : MongoDBService
     public async Task DepositAsync(string userid, double amount)
     {
         var port = await _PortCollection.Find(x => x.userId == userid).FirstOrDefaultAsync();
-        var coin = await _CoinCollection.Find(x => x.Id == "6726004cd800267247bb5dae").FirstOrDefaultAsync();
+        var coin = await _CoinCollection.Find(x => x.Id == "6750300893645cec58c9d1d7").FirstOrDefaultAsync();
         var data = new TransactionModel
         {
             UserId = userid,
             trxType = TransactionModel.TrxType.Deposit,
             buySource = "Bank",
-            coinId = "6726004cd800267247bb5dae", // mac dinh la usdt
+            coinId = "6750300893645cec58c9d1d7", // mac dinh la usdt
             coinPrice = coin.current_price,
             quantity = amount,
             notes = "Deposit from bank",
@@ -165,7 +167,7 @@ public class TransactionService : MongoDBService
     public async Task WithdrawAsync(string userid, double amount, string coinid)
     {
         var port = await _PortCollection.Find(x => x.userId == userid).FirstOrDefaultAsync();
-        var coin = await _CoinCollection.Find(x => x.Id == coinid).FirstOrDefaultAsync();
+        var coin = await _CoinCollection.Find(x => x.CoinId == coinid).FirstOrDefaultAsync();
         var coininPort = await _PortfolioCoinCollection.Find(x => x.portId == port.portId && x.coinId == coinid).FirstOrDefaultAsync();
         if (coininPort.totalQuantity < amount)
         {

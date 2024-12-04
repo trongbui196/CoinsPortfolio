@@ -1,4 +1,6 @@
 import { styled } from "@mui/material/styles";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled("div")({
   height: "100vh",
@@ -32,11 +34,45 @@ const HelloText = styled("h1")({
   },
 });
 
+const ButtonContainer = styled("div")({
+  position: "absolute",
+  bottom: "10%",
+  display: "flex",
+  gap: "20px",
+  justifyContent: "center",
+});
+
+const StyledButton = styled(Button)({
+  padding: "10px 30px",
+  backgroundColor: "rgba(255, 255, 255, 0.1)",
+  color: "#ffffff",
+  borderRadius: "25px",
+  textTransform: "none",
+  fontSize: "1.2rem",
+  fontFamily: "'Comfortaa', cursive",
+  transition: "all 0.3s ease",
+  "&:hover": {
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    transform: "translateY(-3px)",
+  },
+});
+
 const LandingPage = () => {
+  const navigate = useNavigate();
+
   console.log("Landing page rendered");
   return (
     <Container>
       <HelloText>Hello</HelloText>
+      <ButtonContainer>
+        <StyledButton onClick={() => navigate("/market")}>Market</StyledButton>
+        <StyledButton onClick={() => navigate("/portfolio")}>
+          Portfolio
+        </StyledButton>
+        <StyledButton onClick={() => navigate("/watchlist")}>
+          Watchlist
+        </StyledButton>
+      </ButtonContainer>
     </Container>
   );
 };

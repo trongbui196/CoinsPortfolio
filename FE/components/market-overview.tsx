@@ -40,13 +40,15 @@ export function MarketOverview() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   return (
-    <section className=" bg-white dark:bg-gray-800 w-full container mx-auto p-4">
+    <section className="bg-white w-full container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Top Gainer Last 24hrs</h1>
+        <h1 className="text-2xl font-bold px-4 py-2 bg-gray-200 text-black rounded-lg">
+          Top Gainer Last 24hrs
+        </h1>
         <div className="flex gap-2"></div>
       </div>
       <div
@@ -54,7 +56,7 @@ export function MarketOverview() {
         style={{ gridTemplateColumns: "repeat(5, 1fr)", gridGap: "1rem" }}
       >
         {marketData.map((coin: Coin) => (
-          <Card key={coin.symbol} className="w-full">
+          <Card key={coin.symbol} className="w-full bg-white">
             <CardContent className="p-4">
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2">
@@ -62,13 +64,11 @@ export function MarketOverview() {
                   <div>
                     <div
                       onClick={() => handleCoinClick(coin.symbol)}
-                      className="hover:text-blue-500 font-semibold cursor-pointer"
+                      className="hover:text-blue-500 font-semibold cursor-pointer text-black"
                     >
                       {coin.name}
                     </div>
-                    <div className="text-sm text-muted-foreground uppercase">
-                      {coin.symbol}
-                    </div>
+                    <div className="text-sm  uppercase">{coin.symbol}</div>
                   </div>
                 </div>
                 <div
@@ -82,13 +82,19 @@ export function MarketOverview() {
                 </div>
               </div>
               <div className="mt-4">
-                <div className="text-2xl font-bold">
-                  ${coin.current_price.toFixed(2)}
-                </div>
-                <div className="text-sm text-muted-foreground mt-1">
-                  24h Low: ${coin.low_24h.toFixed(2)}
-                  <br />
-                  24h High: ${coin.high_24h.toFixed(2)}
+                <div className="flex justify-between gap-4">
+                  <div className="text-2xl font-bold text-black">
+                    ${coin.current_price.toFixed(2)}
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-medium">
+                      24h High: ${coin.high_24h.toFixed(2)}
+                    </span>
+                    <br></br>
+                    <span className="font-medium">
+                      24h Low: ${coin.low_24h.toFixed(2)}
+                    </span>
+                  </div>
                 </div>
               </div>
             </CardContent>

@@ -36,7 +36,6 @@ public class TransactionModel
     public string? buySource { get; set; } = "Usd";  // usd or convert from other
 
     [BsonElement("coinId")]
-    [BsonRepresentation(BsonType.ObjectId)]
     public string? coinId { get; set; }
     [BsonElement("coinPrice")]
     [BsonRepresentation(BsonType.Double)]

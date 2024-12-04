@@ -51,8 +51,8 @@ public class CoinController : ControllerBase
     {
         try
         {
-            await _coinServices.UpdateCoinAsync();
-            return Ok("Coins updated successfully.");
+            var result = await _coinServices.UpdateCoinAsync();
+            return Ok(result);
         }
         catch (Exception ex)
         {
