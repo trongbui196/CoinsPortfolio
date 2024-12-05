@@ -5,7 +5,7 @@ import MarketPage from "../Pages/MarketPage";
 import LandingPage from "../Pages/LandingPage";
 import WListPage from "../Pages/WListPage";
 import PortfolioPage from "../Pages/PortfolioPage";
-
+import Loginpage from "../Pages/LoginPage";
 function App() {
   return (
     <Router>
@@ -18,6 +18,7 @@ function App() {
           <Route path="/coin/:coinId" element={<CoinPage />} />
           <Route path="/watchlist" element={<WListPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
+          <Route path="/login" element={<Loginpage />} />
         </Routes>
       </div>
     </Router>

@@ -43,7 +43,7 @@ export default function WListPage() {
   }
 
   return (
-    <div className="container py-6">
+    <div className="container px-8 py-6">
       <h1 className="text-2xl font-bold mb-6">Watchlist</h1>
 
       <div className="overflow-x-auto">

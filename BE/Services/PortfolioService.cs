@@ -111,16 +111,22 @@ public class PortfolioService : MongoDBService
                 totalChange = trx.quantity * (coin.current_price - trx.coinPrice),
                 averagePrice = coin.current_price
             };
+            Console.WriteLine("portcoin is okay");
+
             await _PortfolioCoinCollection.InsertOneAsync(data);
+            Console.WriteLine("1");
             var filter = Builders<PortfolioModel>.Filter.Eq(x => x.userId, trx.UserId);
             var update = Builders<PortfolioModel>.Update.Push(x => x.Assets, data.id);
+            Console.WriteLine("2");
             await _PortCollection.UpdateOneAsync(filter, update);
+            Console.WriteLine("3");
         }
         else
         {
             Console.WriteLine($"Updating existing portfolio coin entry: {coininPort.id}");
             var averesult = (coininPort.totalQuantity * coininPort.averagePrice + trx.quantity * trx.coinPrice) / (trx.quantity + coininPort.totalQuantity);
             var filter = Builders<PortfolioCoinModel>.Filter.Eq(x => x.id, coininPort.id);
+            Console.WriteLine("4");
             var update = Builders<PortfolioCoinModel>.Update.Combine(
                 Builders<PortfolioCoinModel>.Update.Inc(x => x.totalQuantity, trx.quantity),
                 Builders<PortfolioCoinModel>.Update.Inc(x => x.totalMoney, trx.quantity * coin.current_price),

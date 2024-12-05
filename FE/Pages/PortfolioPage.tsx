@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+} from "recharts";
 
 interface Asset {
   coinName: string;
@@ -52,16 +59,15 @@ export default function PortfolioPage() {
     navigate(`/coin/${coinName.toLowerCase()}`);
   };
 
-  // Calculate total investment (quantity * average price for each asset)
-  const totalInvestment = portfolio.assets.reduce(
-    (sum, asset) => sum + asset.totalQuantity * asset.averagePrice,
+  const changeinpercent = (
+    (1 + portfolio.changeTotal / portfolio.assetMoney) *
+    100
+  ).toFixed(2);
+  //current value = sum of quanity *current value of each asset
+  const currentvalue = portfolio.assets.reduce(
+    (sum, asset) => sum + asset.totalQuantity * asset.currentValue,
     0
   );
-
-  // Calculate change in dollars
-  const changeInDollars = portfolio.assetMoney - totalInvestment;
-
-  // Prepare data for pie chart
   const pieChartData = portfolio.assets.map((asset) => ({
     name: asset.coinName,
     value: asset.totalQuantity * asset.currentValue,
@@ -74,19 +80,10 @@ export default function PortfolioPage() {
       {/* Top Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {/* Stats Panel */}
-        <div className="md:col-span-2 bg-white rounded-lg shadow-lg p-6">
+        <div className="md:col-span-2 bg-white rounded-lg shadow-lg p-4 border">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div className="p-4 border rounded-lg">
               <div className="text-sm text-gray-500">Total Investment</div>
-              <div className="text-xl font-bold">
-                $
-                {totalInvestment.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                })}
-              </div>
-            </div>
-            <div className="p-4 border rounded-lg">
-              <div className="text-sm text-gray-500">Current Value</div>
               <div className="text-xl font-bold">
                 $
                 {portfolio.assetMoney.toLocaleString(undefined, {
@@ -95,27 +92,36 @@ export default function PortfolioPage() {
               </div>
             </div>
             <div className="p-4 border rounded-lg">
-              <div className="text-sm text-gray-500">Change ($)</div>
-              <div
-                className={`text-xl font-bold ${
-                  changeInDollars >= 0 ? "text-green-500" : "text-red-500"
-                }`}
-              >
-                {changeInDollars >= 0 ? "+" : ""}
-                {changeInDollars.toLocaleString(undefined, {
+              <div className="text-sm text-gray-500">Current Value</div>
+              <div className="text-xl font-bold">
+                $
+                {currentvalue.toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                 })}
               </div>
             </div>
             <div className="p-4 border rounded-lg">
-              <div className="text-sm text-gray-500">Change (%)</div>
+              <div className="text-sm text-gray-500">Change in USD</div>
               <div
                 className={`text-xl font-bold ${
                   portfolio.changeTotal >= 0 ? "text-green-500" : "text-red-500"
                 }`}
               >
                 {portfolio.changeTotal >= 0 ? "+" : ""}
-                {portfolio.changeTotal}%
+                {portfolio.changeTotal.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}
+              </div>
+            </div>
+            <div className="p-4 border rounded-lg">
+              <div className="text-sm text-gray-500">Change in percent</div>
+              <div
+                className={`text-xl font-bold ${
+                  changeinpercent >= 0 ? "text-green-500" : "text-red-500"
+                }`}
+              >
+                {changeinpercent >= 0 ? "+" : ""}
+                {changeinpercent}%
               </div>
             </div>
             <div className="p-4 border rounded-lg">
@@ -128,20 +134,17 @@ export default function PortfolioPage() {
         </div>
 
         {/* Pie Chart */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <div className="h-[200px]">
+        <div className="bg-white rounded-lg shadow-lg border ">
+          <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
+              <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                 <Pie
                   data={pieChartData}
                   dataKey="value"
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  outerRadius={80}
-                  label={({ name, percent }) =>
-                    `${name} ${(percent * 100).toFixed(0)}%`
-                  }
+                  outerRadius={70}
                 >
                   {pieChartData.map((_, index) => (
                     <Cell
@@ -156,6 +159,26 @@ export default function PortfolioPage() {
                       minimumFractionDigits: 2,
                     })}`
                   }
+                />
+                <Legend
+                  iconType="circle"
+                  layout="horizontal"
+                  align="center"
+                  verticalAlign="bottom"
+                  formatter={(value) => (
+                    <span
+                      style={{
+                        color:
+                          COLORS[
+                            pieChartData.findIndex(
+                              (item) => item.name === value
+                            ) % COLORS.length
+                          ],
+                      }}
+                    >
+                      {value}
+                    </span>
+                  )}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -173,46 +196,66 @@ export default function PortfolioPage() {
               <th className="text-right p-4 font-medium">Holdings</th>
               <th className="text-right p-4 font-medium">Avg Price</th>
               <th className="text-right p-4 font-medium">Current Price</th>
-              <th className="text-right p-4 font-medium">Change</th>
+              <th className="text-right p-4 font-medium">Change (USD)</th>
+              <th className="text-right p-4 font-medium">Change (%)</th>
             </tr>
           </thead>
           <tbody>
-            {portfolio.assets.map((asset) => (
-              <tr
-                key={asset.coinName}
-                className="border-b last:border-0 hover:bg-gray-50 cursor-pointer"
-                onClick={() => handleCoinClick(asset.coinName)}
-              >
-                <td className="p-4">
-                  <div className="font-medium">{asset.coinName}</div>
-                </td>
-                <td className="text-right p-4">
-                  {asset.totalQuantity.toLocaleString(undefined, {
-                    minimumFractionDigits: 4,
-                  })}
-                </td>
-                <td className="text-right p-4">
-                  $
-                  {asset.averagePrice.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                  })}
-                </td>
-                <td className="text-right p-4">
-                  $
-                  {asset.currentValue.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                  })}
-                </td>
-                <td
-                  className={`text-right p-4 ${
-                    asset.change >= 0 ? "text-green-500" : "text-red-500"
-                  }`}
+            {portfolio.assets.map((asset) => {
+              const changeInUSD =
+                (asset.currentValue - asset.averagePrice) * asset.totalQuantity;
+              const changeInPercent =
+                ((asset.currentValue - asset.averagePrice) /
+                  asset.averagePrice) *
+                100;
+
+              return (
+                <tr
+                  key={asset.coinName}
+                  className="border-b last:border-0 hover:bg-gray-50 cursor-pointer"
+                  onClick={() => handleCoinClick(asset.coinName)}
                 >
-                  {asset.change >= 0 ? "+" : ""}
-                  {asset.change}%
-                </td>
-              </tr>
-            ))}
+                  <td className="p-4">
+                    <div className="font-medium">{asset.coinName}</div>
+                  </td>
+                  <td className="text-right p-4">
+                    {asset.totalQuantity.toLocaleString(undefined, {
+                      minimumFractionDigits: 4,
+                    })}
+                  </td>
+                  <td className="text-right p-4">
+                    $
+                    {asset.averagePrice.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}
+                  </td>
+                  <td className="text-right p-4">
+                    $
+                    {asset.currentValue.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}
+                  </td>
+                  <td
+                    className={`text-right p-4 ${
+                      changeInUSD >= 0 ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {changeInUSD >= 0 ? "+" : ""}$
+                    {changeInUSD.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}
+                  </td>
+                  <td
+                    className={`text-right p-4 ${
+                      changeInPercent >= 0 ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {changeInPercent >= 0 ? "+" : ""}
+                    {changeInPercent.toFixed(2)}%
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

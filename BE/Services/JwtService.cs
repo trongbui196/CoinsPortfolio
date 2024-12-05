@@ -47,24 +47,34 @@ namespace BE.Services
 
         public async Task<string> GenerateRefreshToken(string userId)
         {
-            var refreshToken = new RefreshTokenModel
-            {
-                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                UserId = userId,
-                ExpiryDate = DateTime.UtcNow.AddDays(7),
-                CreatedAt = DateTime.UtcNow,
-                IsRevoked = false
-            };
             var existingToken = await _refreshTokens.Find(x => x.UserId == userId).FirstOrDefaultAsync();
             if (existingToken != null)
             {
+                var refreshToken = new RefreshTokenModel
+                {
+                    Id = existingToken.Id,
+                    Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                    UserId = userId,
+                    ExpiryDate = DateTime.UtcNow.AddDays(7),
+                    CreatedAt = DateTime.UtcNow,
+                    IsRevoked = false
+                };
                 await _refreshTokens.ReplaceOneAsync(x => x.Id == existingToken.Id, refreshToken);
+                return refreshToken.Token;
             }
             else
             {
+                var refreshToken = new RefreshTokenModel
+                {
+                    Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                    UserId = userId,
+                    ExpiryDate = DateTime.UtcNow.AddDays(7),
+                    CreatedAt = DateTime.UtcNow,
+                    IsRevoked = false
+                };
                 await _refreshTokens.InsertOneAsync(refreshToken);
+                return refreshToken.Token;
             }
-            return refreshToken.Token;
         }
 
         public async Task<(string AccessToken, string RefreshToken)?> RefreshTokens(string userId)

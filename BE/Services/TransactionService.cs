@@ -155,7 +155,7 @@ public class TransactionService : MongoDBService
             UserId = userid,
             trxType = TransactionModel.TrxType.Deposit,
             buySource = "Bank",
-            coinId = "6750300893645cec58c9d1d7", // mac dinh la usdt
+            coinId = "tether", // mac dinh la usdt
             coinPrice = coin.current_price,
             quantity = amount,
             notes = "Deposit from bank",
