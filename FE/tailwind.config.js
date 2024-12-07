@@ -1,5 +1,4 @@
-
-module.exports = {
+export default {
   content: [
     './index.html',
     "./Pages/**/*.{js,ts,jsx,tsx}",
@@ -17,4 +16,4 @@ module.exports = {
     },
   },
   plugins: [],
-}
+};
