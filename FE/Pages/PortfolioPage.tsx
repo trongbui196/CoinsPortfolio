@@ -117,10 +117,12 @@ export default function PortfolioPage() {
               <div className="text-sm text-gray-500">Change in percent</div>
               <div
                 className={`text-xl font-bold ${
-                  changeinpercent >= 0 ? "text-green-500" : "text-red-500"
+                  parseFloat(changeinpercent) >= 0
+                    ? "text-green-500"
+                    : "text-red-500"
                 }`}
               >
-                {changeinpercent >= 0 ? "+" : ""}
+                {parseFloat(changeinpercent) >= 0 ? "+" : ""}
                 {changeinpercent}%
               </div>
             </div>

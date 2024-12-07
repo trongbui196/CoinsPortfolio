@@ -24,9 +24,7 @@ public class UserModel
     [BsonElement("phoneNumber")]
     [BsonRequired]
     public string? PhoneNumber { get; set; }
-    [BsonElement("birthDay")]
-    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-    public DateTime? birthDay { get; set; }
+
     [BsonElement("password")]
     [BsonRequired]
     public string? password { get; set; }

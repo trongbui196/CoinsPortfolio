@@ -85,7 +85,6 @@ public class UserController : ControllerBase
             FirstName = user.FirstName,
             PhoneNumber = user.PhoneNumber,
             Email = user.Email,
-            birthDay = user.birthDay,
             language = "vi",
             currency = "vnd",
             avatarUrl = "https://i.imghippo.com/files/AMJ4821UR.jpg",
@@ -96,18 +95,18 @@ public class UserController : ControllerBase
     }
     [HttpPost("Login")]
     // i want
-    public async Task<IActionResult> Login([DefaultValue("test1")] string username, [DefaultValue("string")] string password)
+    public async Task<IActionResult> Login([FromBody] LoginModel login)
     {
-        if (username == null || password == null)
+        if (login.username == null || login.password == null)
         {
             throw new Exception("Empty user data");
         }
-        var user = await _userService.GetUserByUsernameAsync(username);
+        var user = await _userService.GetUserByUsernameAsync(login.username);
         if (user == null)
         {
             throw new Exception("User not exist");
         }
-        var passwordcheck = new PasswordHasher<string>().VerifyHashedPassword(username, user.password, password);
+        var passwordcheck = new PasswordHasher<string>().VerifyHashedPassword(login.username, user.password, login.password);
         if (passwordcheck == PasswordVerificationResult.Failed)
         {
             throw new Exception("Incorrect password");
@@ -121,7 +120,7 @@ public class UserController : ControllerBase
 
         var accessToken = _jwtService.GenerateAccessToken(user.Id, user.Email, UserRole.Customer);
         var refreshToken = existingToken?.Token ?? await _jwtService.GenerateRefreshToken(user.Id);
-        Console.WriteLine($"Login successful for user: {username} with access token: {accessToken} and refresh token: {refreshToken}");
+        Console.WriteLine($"Login successful for user: {login.username} with access token: {accessToken} and refresh token: {refreshToken}");
         // log the login role
         Console.WriteLine($"Login role: {UserRole.Customer}");
         return Ok(new

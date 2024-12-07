@@ -3,48 +3,64 @@ import axios from "axios";
 
 export default function LoginPage() {
   const [isRegister, setIsRegister] = useState(false);
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
+  const [LoginformData, setLoginFormData] = useState({
+    username: "aa",
     password: "",
   });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [RegisterformData, setRegisterFormData] = useState({
+    userName: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phonenumber: "",
+    birthDay: "",
+    password: "",
+  });
+  //login
+  const handleLoginInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setLoginFormData({ ...LoginformData, [name]: value });
+  };
+
+  const handleRegisterInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    setRegisterFormData({ ...RegisterformData, [name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const url = isRegister
-      ? "http://localhost:5101/api/auth/register"
-      : "http://localhost:5101/api/auth/login";
-
+      ? "http://localhost:5101/api/User/Register"
+      : "http://localhost:5101/api/User/Login";
+    const data = isRegister ? RegisterformData : LoginformData;
     try {
-      const response = await axios.post(url, formData);
+      const response = await axios.post(url, data);
       console.log("Success:", response.data);
-      // Handle successful login/register (e.g., redirect, store token)
     } catch (error) {
       console.error("Error:", error);
       // Handle error (e.g., show error message)
     }
+    console.log("url:", url);
+    console.log("data:", data);
+    console.log(isRegister);
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex">
       <div className="w-1/2 bg-gray-100 flex flex-col justify-center items-center">
         <div className={`w-full max-w-sm ${isRegister ? "opacity-50" : ""}`}>
           <h2 className="text-3xl font-bold mb-4">Login</h2>
           <form onSubmit={handleSubmit} className="w-full">
             <div className="mb-4">
-              <label className="block text-gray-700">Email</label>
+              <label className="block text-gray-700">Username</label>
               <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
+                type="text"
+                name="username"
+                value={LoginformData.username}
+                onChange={handleLoginInputChange}
                 className="w-full px-3 py-2 border rounded"
-                required
               />
             </div>
             <div className="mb-4">
@@ -52,10 +68,9 @@ export default function LoginPage() {
               <input
                 type="password"
                 name="password"
-                value={formData.password}
-                onChange={handleInputChange}
+                value={LoginformData.password}
+                onChange={handleLoginInputChange}
                 className="w-full px-3 py-2 border rounded"
-                required
               />
             </div>
             <button
@@ -82,24 +97,57 @@ export default function LoginPage() {
           <h2 className="text-3xl font-bold mb-4">Register</h2>
           <form onSubmit={handleSubmit} className="w-full">
             <div className="mb-4">
+              <label className="block text-gray-700">First name</label>
+              <input
+                type="text"
+                name="firstName"
+                value={RegisterformData.firstName}
+                onChange={handleRegisterInputChange}
+                className="w-full px-3 py-2 border rounded text-black"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">Last name</label>
+              <input
+                type="text"
+                name="lastName"
+                value={RegisterformData.lastName}
+                onChange={handleRegisterInputChange}
+                className="w-full px-3 py-2 border rounded text-black"
+                required
+              />
+            </div>
+            <div className="mb-4">
               <label className="block text-gray-700">Username</label>
               <input
                 type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded"
+                name="userName"
+                value={RegisterformData.userName}
+                onChange={handleRegisterInputChange}
+                className="w-full px-3 py-2 border rounded text-black"
                 required
               />
             </div>
             <div className="mb-4">
               <label className="block text-gray-700">Email</label>
               <input
-                type="email"
+                type="text"
                 name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded"
+                value={RegisterformData.email}
+                onChange={handleRegisterInputChange}
+                className="w-full px-3 py-2 border rounded text-black"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">Phone Number</label>
+              <input
+                type="text"
+                name="phonenumber"
+                value={RegisterformData.phonenumber}
+                onChange={handleRegisterInputChange}
+                className="w-full px-3 py-2 border rounded text-black"
                 required
               />
             </div>
@@ -108,9 +156,9 @@ export default function LoginPage() {
               <input
                 type="password"
                 name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded"
+                value={RegisterformData.password}
+                onChange={handleRegisterInputChange}
+                className="w-full px-3 py-2 border rounded text-black"
                 required
               />
             </div>
