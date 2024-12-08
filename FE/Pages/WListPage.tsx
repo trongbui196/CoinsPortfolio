@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { RootState } from "../store/store";
+import { useSelector } from "react-redux";
 interface Coin {
   id: string;
   coinId: string;
@@ -17,7 +19,9 @@ export default function WListPage() {
   const navigate = useNavigate();
   const [watchlistData, setWatchlistData] = useState<Coin[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const userId = "6742b8321475d1cb45a231ec"; // Hardcoded for now
+  const userId = useSelector((state: RootState) => state.user.userid);
+  const accesstoken = useSelector((state: RootState) => state.user.accessToken);
+  console.log(userId);
   const handleClick = (coinId: string) => {
     navigate(`/coin/${coinId}`);
   };
@@ -25,7 +29,12 @@ export default function WListPage() {
     const fetchWatchlist = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5101/api/FavList/${userId}`
+          `http://localhost:5101/api/FavList/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accesstoken}`, // Add the Authorization header
+            },
+          }
         );
         setWatchlistData(response.data);
       } catch (error) {
@@ -36,7 +45,7 @@ export default function WListPage() {
     };
 
     fetchWatchlist();
-  }, []);
+  });
 
   if (isLoading) {
     return <div>Loading...</div>;

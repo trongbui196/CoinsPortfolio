@@ -1,11 +1,16 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import axios from "axios";
-
+import { setUser } from "../store/userSlice";
+import { useNavigate } from "react-router-dom";
 export default function LoginPage() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  // Get userid from Redux state
   const [isRegister, setIsRegister] = useState(false);
   const [LoginformData, setLoginFormData] = useState({
-    username: "aa",
-    password: "",
+    username: "test1",
+    password: "string",
   });
   const [RegisterformData, setRegisterFormData] = useState({
     userName: "",
@@ -16,7 +21,8 @@ export default function LoginPage() {
     birthDay: "",
     password: "",
   });
-  //login
+  const [errorMessage, setErrorMessage] = useState(""); // State for error message
+
   const handleLoginInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setLoginFormData({ ...LoginformData, [name]: value });
@@ -37,10 +43,22 @@ export default function LoginPage() {
     const data = isRegister ? RegisterformData : LoginformData;
     try {
       const response = await axios.post(url, data);
-      console.log("Success:", response.data);
+      console.log(response.data);
+      if (!isRegister && response.data.id && response.data.accessToken) {
+        console.log("login success");
+        dispatch(
+          setUser({
+            userid: response.data.id,
+            accessToken: response.data.accessToken,
+          })
+        );
+
+        navigate(`/market`);
+        setErrorMessage(""); // Clear any previous error message
+      }
     } catch (error) {
       console.error("Error:", error);
-      // Handle error (e.g., show error message)
+      setErrorMessage("Login failed. Please check your credentials."); // Set error message
     }
     console.log("url:", url);
     console.log("data:", data);
@@ -51,7 +69,12 @@ export default function LoginPage() {
     <div className="flex">
       <div className="w-1/2 bg-gray-100 flex flex-col justify-center items-center">
         <div className={`w-full max-w-sm ${isRegister ? "opacity-50" : ""}`}>
-          <h2 className="text-3xl font-bold mb-4">Login</h2>
+          <h2 className="text-3xl font-bold mb-4">
+            {isRegister ? "Register" : "Login"}
+          </h2>
+          {errorMessage && ( // Render error message if it exists
+            <div className="mb-4 text-red-500">{errorMessage}</div>
+          )}
           <form onSubmit={handleSubmit} className="w-full">
             <div className="mb-4">
               <label className="block text-gray-700">Username</label>
@@ -77,7 +100,7 @@ export default function LoginPage() {
               type="submit"
               className="w-full bg-blue-500 text-white py-2 rounded"
             >
-              Login
+              {isRegister ? "Register" : "Login"}
             </button>
           </form>
         </div>

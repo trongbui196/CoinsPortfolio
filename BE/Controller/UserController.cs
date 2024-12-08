@@ -127,7 +127,8 @@ public class UserController : ControllerBase
         {
             accessToken,
             refreshToken,
-            tokenType = "Bearer"
+            tokenType = "Bearer",
+            user.Id
         });
     }
     [HttpPost("refresh")]

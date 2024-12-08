@@ -11,7 +11,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
+import { RootState } from "../store/store";
+import { useSelector } from "react-redux";
 interface CoinDetail {
   id: string;
   symbol: string;
@@ -47,8 +48,7 @@ export default function CoinDetailPage() {
   const [isLoadingChart, setIsLoadingChart] = useState(true);
   const [isInWatchlist, setIsInWatchlist] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<ChartPeriod>(365);
-  const userId = "6742b8321475d1cb45a231ec";
-
+  const userId = useSelector((state: RootState) => state.user.userid);
   useEffect(() => {
     const fetchChartData = async () => {
       setIsLoadingChart(true);

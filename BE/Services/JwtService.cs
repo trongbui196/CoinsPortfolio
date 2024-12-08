@@ -32,7 +32,7 @@ namespace BE.Services
 
             var audience = role.ToString() == "Admin"
                 ? "http://localhost:3001"    // Admin UI
-                : "http://localhost:3000";   // Customer UI
+                : "http://localhost:5101,http://localhost:5173";   // Customer UI
 
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],

@@ -9,7 +9,8 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-
+import { RootState } from "../store/store";
+import { useSelector } from "react-redux";
 interface Asset {
   coinName: string;
   totalQuantity: number;
@@ -32,7 +33,7 @@ export default function PortfolioPage() {
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  const userId = "6742b8321475d1cb45a231ec";
+  const userId = useSelector((state: RootState) => state.user.userid);
 
   useEffect(() => {
     const fetchPortfolio = async () => {
