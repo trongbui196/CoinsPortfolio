@@ -9,8 +9,8 @@ export default function LoginPage() {
   // Get userid from Redux state
   const [isRegister, setIsRegister] = useState(false);
   const [LoginformData, setLoginFormData] = useState({
-    username: "test1",
-    password: "string",
+    username: "trongbui123",
+    password: "123abc",
   });
   const [RegisterformData, setRegisterFormData] = useState({
     userName: "",
@@ -21,7 +21,7 @@ export default function LoginPage() {
     birthDay: "",
     password: "",
   });
-  const [errorMessage, setErrorMessage] = useState(""); // State for error message
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleLoginInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

@@ -11,6 +11,8 @@ import {
 } from "recharts";
 import { RootState } from "../store/store";
 import { useSelector } from "react-redux";
+import Modal from "../components/Modal";
+
 interface Asset {
   coinName: string;
   totalQuantity: number;
@@ -32,6 +34,13 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 export default function PortfolioPage() {
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
+  const [isSellModalOpen, setIsSellModalOpen] = useState(false);
+  const [amount, setAmount] = useState(0);
+  const [selectedCoinId, setSelectedCoinId] = useState("");
+  const [selectedCoinHoldings, setSelectedCoinHoldings] = useState(0);
   const navigate = useNavigate();
   const userId = useSelector((state: RootState) => state.user.userid);
 
@@ -50,7 +59,73 @@ export default function PortfolioPage() {
     };
 
     fetchPortfolio();
-  }, []);
+  }, [userId]);
+
+  const handleDeposit = async () => {
+    try {
+      await axios.post(
+        `http://localhost:5101/api/Transactions/${userId}/Deposit?amount=${amount}
+`
+      );
+      setIsDepositModalOpen(false);
+    } catch (error) {
+      console.error("Error during deposit:", error);
+    }
+  };
+  const handleWithdrawClick = async () => {
+    setIsWithdrawModalOpen(true);
+    setAmount(0);
+  };
+  const handleWithdraw = async (coinId: string) => {
+    try {
+      await axios.post(
+        `http://localhost:5101/api/Transactions/${userId}/Withdraw?amount=${amount}&coinid=${coinId}`
+      );
+      setIsWithdrawModalOpen(false);
+    } catch (error) {
+      console.error("Error during withdrawal:", error);
+    }
+  };
+
+  const handleBuy = async () => {
+    const data = {
+      UserId: userId,
+      trxType: 0,
+      buySource: "USD",
+      coinId: selectedCoinId,
+      quantity: amount,
+      notes: "Buy",
+      CreateAt: new Date().toISOString(),
+    };
+    try {
+      await axios.post(`http://localhost:5101/api/Transaction/Buy`, data);
+      setIsBuyModalOpen(false);
+    } catch (error) {
+      console.error("Error during buy:", error);
+    }
+  };
+
+  const handleSell = async () => {
+    if (amount > selectedCoinHoldings) {
+      alert("Sell amount cannot exceed holdings.");
+      return;
+    }
+    const data = {
+      UserId: userId,
+      trxType: 1,
+      buySource: "USD",
+      coinId: selectedCoinId,
+      quantity: amount,
+      notes: "Sell",
+      CreateAt: new Date().toISOString(),
+    };
+    try {
+      await axios.post(`http://localhost:5101/api/Transaction/Sell`, data);
+      setIsSellModalOpen(false);
+    } catch (error) {
+      console.error("Error during sell:", error);
+    }
+  };
 
   if (isLoading || !portfolio) {
     return <div>Loading...</div>;
@@ -133,6 +208,24 @@ export default function PortfolioPage() {
                 {portfolio.numberofTokenHold}
               </div>
             </div>
+            <div className="p-4 border flex space-x-4 rounded-lg">
+              <div>
+                <button
+                  onClick={() => setIsDepositModalOpen(true)}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                >
+                  Deposit
+                </button>
+              </div>
+              <div>
+                <button
+                  onClick={() => handleWithdrawClick()}
+                  className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors"
+                >
+                  Withdraw
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -201,6 +294,7 @@ export default function PortfolioPage() {
               <th className="text-right p-4 font-medium">Current Price</th>
               <th className="text-right p-4 font-medium">Change (USD)</th>
               <th className="text-right p-4 font-medium">Change (%)</th>
+              <th className="text-right p-4 font-medium">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -215,11 +309,15 @@ export default function PortfolioPage() {
               return (
                 <tr
                   key={asset.coinName}
-                  className="border-b last:border-0 hover:bg-gray-50 cursor-pointer"
-                  onClick={() => handleCoinClick(asset.coinName)}
+                  className="border-b last:border-0 hover:bg-gray-50 "
                 >
                   <td className="p-4">
-                    <div className="font-medium">{asset.coinName}</div>
+                    <div
+                      onClick={() => handleCoinClick(asset.coinName)}
+                      className="font-medium"
+                    >
+                      {asset.coinName}
+                    </div>
                   </td>
                   <td className="text-right p-4">
                     {asset.totalQuantity.toLocaleString(undefined, {
@@ -256,12 +354,151 @@ export default function PortfolioPage() {
                     {changeInPercent >= 0 ? "+" : ""}
                     {changeInPercent.toFixed(2)}%
                   </td>
+                  <td className="text-right p-4">
+                    <button
+                      className="ml-2 bg-red-500 text-white px-2 py-1 rounded"
+                      onClick={() => {
+                        setSelectedCoinHoldings(asset.totalQuantity);
+                        setAmount(0);
+                        setIsSellModalOpen(true);
+                      }}
+                    >
+                      Sell
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setSelectedCoinId(asset.coinName);
+                        setAmount(0);
+                        setIsBuyModalOpen(true);
+                      }}
+                      className="ml-2 bg-green-500 text-white px-2 py-1 rounded"
+                    >
+                      Buy
+                    </button>
+                  </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
       </div>
+
+      {/* Deposit Modal */}
+      <Modal
+        isOpen={isDepositModalOpen}
+        onClose={() => setIsDepositModalOpen(false)}
+        title="Deposit"
+      >
+        <input
+          type="number"
+          value={amount}
+          onChange={(e) => setAmount(Number(e.target.value))}
+          placeholder="Amount in USD"
+          className="border p-2 rounded w-full"
+        />
+        <button
+          onClick={handleDeposit}
+          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          Confirm Deposit
+        </button>
+      </Modal>
+
+      {/* Withdraw Modal */}
+      <Modal
+        isOpen={isWithdrawModalOpen}
+        onClose={() => setIsWithdrawModalOpen(false)}
+        title="Withdraw"
+      >
+        <select
+          onChange={(e) => setSelectedCoinId(e.target.value)}
+          className="border p-2 rounded w-full mb-2"
+        >
+          <option value="">Select Coin</option>
+          {portfolio.assets.map((asset) => (
+            <option key={asset.coinName} value={asset.coinName}>
+              {asset.coinName}
+            </option>
+          ))}
+        </select>
+        <input
+          type="number"
+          value={amount}
+          onChange={(e) => setAmount(Number(e.target.value))}
+          placeholder="Amount"
+          className="border p-2 rounded w-full"
+        />
+        <button
+          disabled={
+            amount <= 0 ||
+            (portfolio.assets.find((asset) => asset.coinName === selectedCoinId)
+              ?.totalQuantity || 0) < amount
+          } // Disable if invalid
+          onClick={() => handleWithdraw(selectedCoinId)}
+          className={`mt-4 text-white px-4 py-2 rounded ${
+            amount <= 0 ||
+            (portfolio.assets.find((asset) => asset.coinName === selectedCoinId)
+              ?.totalQuantity || 0) < amount
+              ? "bg-gray-500" // Gray background when disabled
+              : "bg-orange-500" // Original color when enabled
+          }`}
+        >
+          Confirm Withdraw
+        </button>
+      </Modal>
+
+      {/* Buy Modal */}
+      <Modal
+        isOpen={isBuyModalOpen}
+        onClose={() => setIsBuyModalOpen(false)}
+        title="Buy"
+      >
+        <input
+          type="number"
+          value={amount}
+          onChange={(e) => setAmount(Number(e.target.value))}
+          placeholder="Amount"
+          className="border p-2 rounded w-full"
+        />
+        <button
+          disabled={amount <= 0}
+          onClick={handleBuy}
+          className={`mt-4 text-white px-4 py-2 rounded ${
+            amount <= 0
+              ? "bg-gray-500" // Gray background when disabled
+              : "bg-green-500" // Original color when enabled
+          }`}
+        >
+          Confirm Buy
+        </button>
+      </Modal>
+
+      {/* Sell Modal */}
+      <Modal
+        isOpen={isSellModalOpen}
+        onClose={() => setIsSellModalOpen(false)}
+        title="Sell"
+      >
+        <input
+          type="number"
+          value={amount}
+          onChange={(e) => setAmount(Number(e.target.value))}
+          placeholder="Amount"
+          className="border p-2 rounded w-full"
+        />
+        <button
+          disabled={amount <= 0 || amount > selectedCoinHoldings}
+          onClick={handleSell}
+          className={`mt-4 text-white px-4 py-2 rounded ${
+            amount <= 0 || selectedCoinHoldings < amount
+              ? "bg-gray-500" // Gray background when disabled
+              : "bg-orange-500" // Original color when enabled
+          }`}
+        >
+          Confirm Sell
+        </button>
+      </Modal>
     </div>
   );
 }

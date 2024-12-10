@@ -10,7 +10,7 @@ public class TransactionService : MongoDBService
     {
         Console.WriteLine("add trx");
 
-        var coin = await _CoinCollection.Find(x => x.CoinId == trx.coinId).FirstOrDefaultAsync();
+        var coin = await _CoinCollection.Find(x => x.Name == trx.coinId).FirstOrDefaultAsync();
         var port = await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
 
         switch (trx.trxType)
@@ -167,8 +167,8 @@ public class TransactionService : MongoDBService
     public async Task WithdrawAsync(string userid, double amount, string coinid)
     {
         var port = await _PortCollection.Find(x => x.userId == userid).FirstOrDefaultAsync();
-        var coin = await _CoinCollection.Find(x => x.CoinId == coinid).FirstOrDefaultAsync();
-        var coininPort = await _PortfolioCoinCollection.Find(x => x.portId == port.portId && x.coinId == coinid).FirstOrDefaultAsync();
+        var coin = await _CoinCollection.Find(x => x.Name == coinid).FirstOrDefaultAsync();
+        var coininPort = await _PortfolioCoinCollection.Find(x => x.portId == port.portId && x.coinId == coin.CoinId).FirstOrDefaultAsync();
         if (coininPort.totalQuantity < amount)
         {
             throw new ArgumentException("Not enough coin in port");
@@ -178,7 +178,7 @@ public class TransactionService : MongoDBService
             UserId = userid,
             trxType = TransactionModel.TrxType.Withdraw,
             buySource = "Bank",
-            coinId = coinid,
+            coinId = coin.CoinId,
             coinPrice = coin.current_price,
             quantity = amount,
             notes = "Withdraw to bank",
