@@ -44,11 +44,12 @@ export function SiteHeader() {
                   Watchlist
                 </a>
                 <a
-                  href="/profile"
+                  href="/transaction"
                   className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Profile
+                  Transaction
                 </a>
+
                 <button
                   onClick={handleLogout}
                   className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"

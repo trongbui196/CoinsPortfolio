@@ -89,11 +89,11 @@ public class TransactionService : MongoDBService
         foreach (var data in trx)
         {
             var user = await _UserCollection.Find(x => x.Id == data.UserId).FirstOrDefaultAsync();
-            var coin = await _CoinCollection.Find(x => x.CoinId == data.coinId).FirstOrDefaultAsync();
+            var coin = await _CoinCollection.Find(x => x.Name == data.coinId).FirstOrDefaultAsync();
             var res = new TransactionDto
             {
                 TransactionId = data.Id,
-                userName = user.userName,
+
                 TrxType = data.trxType,
                 buySource = data.buySource,
                 CoinName = coin.Name,
@@ -114,7 +114,7 @@ public class TransactionService : MongoDBService
             Builders<TransactionModel>.Filter.Eq(x => x.UserId, userid)
         );
         var trx = await _TransactionCollection.Find(filter).FirstOrDefaultAsync() ?? throw new KeyNotFoundException("Transaction not found.");
-        var coin = await _CoinCollection.Find(x => x.CoinId == trx.coinId).FirstOrDefaultAsync();
+        var coin = await _CoinCollection.Find(x => x.Name == trx.coinId).FirstOrDefaultAsync();
         var res = new TransactionDto
         {
             TransactionId = trx.Id,
@@ -138,7 +138,7 @@ public class TransactionService : MongoDBService
         }
         foreach (var data in trx)
         {
-            var coin = await _CoinCollection.Find(x => x.CoinId == data.coinId).FirstOrDefaultAsync();
+            var coin = await _CoinCollection.Find(x => x.Name == data.coinId).FirstOrDefaultAsync();
             var res = new TransactionDto
             {
                 TransactionId = data.Id,
@@ -148,7 +148,8 @@ public class TransactionService : MongoDBService
                 coinPrice = data.coinPrice,
                 quantity = data.quantity,
                 totalAmount = data.quantity * coin.current_price,
-                TimeExecute = data.CreateAt
+                TimeExecute = data.CreateAt,
+                Notes = data.notes
             };
             result.Add(res);
         }

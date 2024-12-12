@@ -89,4 +89,9 @@ public class CoinController : ControllerBase
         var data = await _coinServices.GetChartDataAsync(symbol, period);
         return Ok(data);
     }
+    [HttpGet("GetNamebyId")]
+    public async Task<string> GetNameById(string coinId)
+    {
+        return await _coinServices.GetNameByIdAsync(coinId);
+    }
 }

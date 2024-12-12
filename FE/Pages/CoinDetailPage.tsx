@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Star, TrendingUp } from "lucide-react";
+import Modal from "../components/Modal";
+import { Star } from "lucide-react";
 import {
   AreaChart,
   Area,
@@ -49,6 +50,9 @@ export default function CoinDetailPage() {
   const [isInWatchlist, setIsInWatchlist] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<ChartPeriod>(365);
   const userId = useSelector((state: RootState) => state.user.userid);
+  const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
+  const [amount, setAmount] = useState(0);
+
   useEffect(() => {
     const fetchChartData = async () => {
       setIsLoadingChart(true);
@@ -131,6 +135,31 @@ export default function CoinDetailPage() {
     }
   };
 
+  const handleBuy = async () => {
+    // Fetch the coin name using the coin ID
+    try {
+      const response = await axios.get(
+        `http://localhost:5101/api/Coins/GetNameById?coinId=${coinId}`
+      );
+      const coinName = response.data; // Assuming the API returns the coin name directly
+
+      const data = {
+        UserId: userId,
+        trxType: 0,
+        buySource: "USD",
+        coinId: coinName, // Use the fetched coin name here
+        quantity: amount,
+        notes: "Buy",
+        CreateAt: new Date().toISOString(),
+      };
+
+      await axios.post(`http://localhost:5101/api/Transactions/addTrx`, data);
+      setIsBuyModalOpen(false);
+    } catch (error) {
+      console.error("Error during buy:", error);
+    }
+  };
+
   if (isLoadingCoin || !coinInfo) {
     return <div>Loading...</div>;
   }
@@ -188,9 +217,14 @@ export default function CoinDetailPage() {
                   {isInWatchlist ? "Watchlisted" : "Add to Watchlist"}
                 </button>
 
-                <button className="flex items-center gap-1 px-4 py-1.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors w-1/2">
-                  <TrendingUp className="w-4 h-4" />
-                  Trade {coinInfo.symbol.toUpperCase()}
+                <button
+                  onClick={() => {
+                    setAmount(0);
+                    setIsBuyModalOpen(true);
+                  }}
+                  className="flex items-center gap-1 px-4 py-1.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors w-1/2"
+                >
+                  Buy {coinInfo.symbol.toUpperCase()}
                 </button>
               </div>
 
@@ -370,6 +404,30 @@ export default function CoinDetailPage() {
             )}
           </div>
         </div>
+
+        {/* Modal for buying */}
+        <Modal
+          isOpen={isBuyModalOpen}
+          onClose={() => setIsBuyModalOpen(false)}
+          title="Buy"
+        >
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            placeholder="Amount"
+            className="border p-2 rounded w-full"
+          />
+          <button
+            disabled={amount <= 0}
+            onClick={handleBuy}
+            className={`mt-4 text-white px-4 py-2 rounded ${
+              amount <= 0 ? "bg-gray-500" : "bg-green-500"
+            }`}
+          >
+            Confirm Buy
+          </button>
+        </Modal>
       </div>
     </div>
   );

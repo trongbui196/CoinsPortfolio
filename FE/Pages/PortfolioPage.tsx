@@ -50,6 +50,11 @@ export default function PortfolioPage() {
         const response = await axios.get(
           `http://localhost:5101/api/Porfolio/getPortfolio?userid=${userId}`
         );
+        if (response.data.msg === "Empty") {
+          setPortfolio(null);
+          setIsLoading(false);
+          return;
+        }
         setPortfolio(response.data);
       } catch (error) {
         console.error("Error fetching portfolio:", error);
@@ -60,7 +65,7 @@ export default function PortfolioPage() {
     };
 
     fetchPortfolio();
-  }, [userId]);
+  }, [portfolio?.assetMoney, userId]);
 
   const handleDeposit = async () => {
     try {
@@ -129,8 +134,12 @@ export default function PortfolioPage() {
     }
   };
 
-  if (isLoading || !portfolio) {
+  if (isLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (!portfolio) {
+    return <div>User portfolio is empty.</div>;
   }
 
   const handleCoinClick = (coinName: string) => {

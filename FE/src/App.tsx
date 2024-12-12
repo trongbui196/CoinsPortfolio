@@ -5,6 +5,7 @@ import MarketPage from "../Pages/MarketPage";
 import LandingPage from "../Pages/LandingPage";
 import WListPage from "../Pages/WListPage";
 import PortfolioPage from "../Pages/PortfolioPage";
+import TransactionPage from "../Pages/TransactionsPage";
 import Loginpage from "../Pages/LoginPage";
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/watchlist" element={<WListPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/login" element={<Loginpage />} />
+          <Route path="/transaction" element={<TransactionPage />} />
         </Routes>
       </div>
     </Router>

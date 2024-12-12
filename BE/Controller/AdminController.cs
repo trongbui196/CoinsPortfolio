@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BE.Services;
 using Microsoft.AspNetCore.Identity;
+using StackExchange.Redis;
 
 [ApiController]
 [Route("api/Admin")]
@@ -57,7 +58,13 @@ public class AdminController : ControllerBase
         await _jwtService.RevokeRefreshToken(token.Token);
         return Ok(new { message = "Successfully logged out" });
     }
-
+    [Authorize(Roles = "Admin")]
+    [HttpPost("addAdmin")]
+    public async Task<IActionResult> CreateAdmin(AdminModel admin)
+    {
+        await _adminService.AddAdminrAsync(admin);
+        return Ok("admin added");
+    }
 
 }
 

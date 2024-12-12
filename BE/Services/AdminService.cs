@@ -24,5 +24,6 @@ namespace BE.Services
             await _AdminCollection.InsertOneAsync(admin);
         }
 
+
     }
 }

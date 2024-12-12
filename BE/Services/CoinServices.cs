@@ -9,9 +9,14 @@ public class CoinServices : MongoDBService
     {
         return await _CoinCollection.Find(_ => true).ToListAsync();
     }
+    public async Task<string> GetNameByIdAsync(string coinId)
+    {
+        var coin = await _CoinCollection.Find(x => x.CoinId == coinId).FirstOrDefaultAsync();
+        return coin.Name;
+    }
     public async Task<List<CoinModel>> Get20CoinAsync()
     {
-        return await _CoinCollection.Find(_ => true).Limit(20).ToListAsync();
+        return await _CoinCollection.Find(_ => true).SortByDescending(x => x.market_cap).Limit(20).ToListAsync();
     }
     public async Task<List<CoinModel>> GetTop5GainersAsync()
     {
