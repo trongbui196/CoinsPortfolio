@@ -74,3 +74,7 @@ C:\Users\An\Desktop\TrongD\FinalThesis\be\obj\Debug\net8.0\refint\BE.dll
 C:\Users\An\Desktop\TrongD\FinalThesis\be\obj\Debug\net8.0\BE.pdb
 C:\Users\An\Desktop\TrongD\FinalThesis\be\obj\Debug\net8.0\BE.genruntimeconfig.cache
 C:\Users\An\Desktop\TrongD\FinalThesis\be\obj\Debug\net8.0\ref\BE.dll
+C:\Users\An\Desktop\TrongD\FinalThesis\be\bin\Debug\net8.0\publish\web.config
+C:\Users\An\Desktop\TrongD\FinalThesis\be\bin\Debug\net8.0\publish\appsettings.json
+C:\Users\An\Desktop\TrongD\FinalThesis\be\bin\Debug\net8.0\publish\BE.deps.json
+C:\Users\An\Desktop\TrongD\FinalThesis\be\bin\Debug\net8.0\publish\BE.runtimeconfig.json

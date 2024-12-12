@@ -9,21 +9,31 @@ public class TransactionService : MongoDBService
     public async Task addTrxAsync(TransactionModel trx)
     {
         Console.WriteLine("add trx");
+        Console.WriteLine($"id={trx.coinId}");
+        Console.WriteLine($"price={trx.coinPrice}");
+        Console.WriteLine($"id={trx.quantity}");
+        Console.WriteLine($"id={trx.UserId}");
+        Console.WriteLine($"type={trx.trxType}");
 
+        //luc chuyen qua selltoport thieu coinprice
+        if (trx.notes == null) trx.notes = "default note";
         var coin = await _CoinCollection.Find(x => x.Name == trx.coinId).FirstOrDefaultAsync();
-        var port = await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
+        Console.WriteLine(coin.current_price);
 
+        var port = await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
+        Console.WriteLine($"before enter swtich id={trx.coinId}");
         switch (trx.trxType)
         {
             case 0:
+                Console.WriteLine("add to port", trx.coinId);
                 await _portService.AddtoPort(trx);
-                Console.WriteLine("add to port");
+
 
                 break;
             case (TransactionModel.TrxType)1:
-                await _portService.SelltoPort(trx);
-                Console.WriteLine("sell to port");
+                Console.WriteLine("sell to port:", trx.coinId);
 
+                await _portService.SelltoPort(trx);
                 break;
 
         }
@@ -38,6 +48,8 @@ public class TransactionService : MongoDBService
             notes = trx.notes,
             CreateAt = DateTime.Now
         };
+        if (data == null) Console.WriteLine("data null at addtrx");
+
         await _TransactionCollection.InsertOneAsync(data);
     }
     public async Task addTrxManuallyAsync(TransactionModel trx)
@@ -155,7 +167,7 @@ public class TransactionService : MongoDBService
             UserId = userid,
             trxType = TransactionModel.TrxType.Deposit,
             buySource = "Bank",
-            coinId = "tether", // mac dinh la usdt
+            coinId = "Tether", // mac dinh la usdt
             coinPrice = coin.current_price,
             quantity = amount,
             notes = "Deposit from bank",
@@ -178,7 +190,7 @@ public class TransactionService : MongoDBService
             UserId = userid,
             trxType = TransactionModel.TrxType.Withdraw,
             buySource = "Bank",
-            coinId = coin.CoinId,
+            coinId = coin.Name,
             coinPrice = coin.current_price,
             quantity = amount,
             notes = "Withdraw to bank",

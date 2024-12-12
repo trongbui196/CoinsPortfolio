@@ -22,8 +22,15 @@ public class PortfolioService : MongoDBService
             double? curMoney = 0;
             foreach (var coin in port.Assets)
             {
+                Console.WriteLine(coin);
+
                 var portCoinInfo = await _PortfolioCoinCollection.Find(x => x.id == coin).FirstOrDefaultAsync();
+                if (portCoinInfo == null) Console.WriteLine(1502);
+
                 var coinInfo = await _CoinCollection.Find(x => x.CoinId == portCoinInfo.coinId).FirstOrDefaultAsync();
+                if (coinInfo == null) Console.WriteLine(portCoinInfo.coinId);
+
+                Console.WriteLine($"{coin}: {coinInfo.Name}, {coinInfo.current_price},{portCoinInfo.totalQuantity},{portCoinInfo.averagePrice}");
                 data2.Add(new portfolioCoinDto
                 {
                     CoinName = coinInfo.Name,
@@ -32,8 +39,10 @@ public class PortfolioService : MongoDBService
                     CurrentValue = coinInfo.current_price,
                     Change = portCoinInfo.totalQuantity * (coinInfo.current_price - portCoinInfo.averagePrice),
                 });
+                //Console.WriteLine($"{coin} is 3");
                 averageAsset += portCoinInfo.totalQuantity * portCoinInfo.averagePrice;
                 curMoney += portCoinInfo.totalQuantity * coinInfo.current_price;
+
             }
             var data = new PortfolioDto
             {
@@ -89,26 +98,28 @@ public class PortfolioService : MongoDBService
     {
         Console.WriteLine($"AddtoPort called with userId: {trx.UserId}, coinId: {trx.coinId}, quantity: {trx.quantity}");
 
-        var coin = await _CoinCollection.Find(x => x.CoinId == trx.coinId).FirstOrDefaultAsync();
+        var coin = await _CoinCollection.Find(x => x.Name == trx.coinId).FirstOrDefaultAsync();
         var port = await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
         Console.WriteLine($"Found coin: {coin?.Name}");
         Console.WriteLine($"Found portfolio: {port?.portId}");
 
         var coinfilter = Builders<PortfolioCoinModel>.Filter.And(
-            Builders<PortfolioCoinModel>.Filter.Eq(x => x.coinId, trx.coinId),
+            Builders<PortfolioCoinModel>.Filter.Eq(x => x.coinId, coin.CoinId),
             Builders<PortfolioCoinModel>.Filter.Eq(x => x.portId, port.portId)
         );
         var coininPort = await _PortfolioCoinCollection.Find(coinfilter).FirstOrDefaultAsync();
         if (coininPort == null)
         {
             Console.WriteLine("Creating new portfolio coin entry");
+            Console.WriteLine(port.portId, trx.coinId, trx.quantity, coin.current_price, trx.coinPrice, trx.quantity);
+
             var data = new PortfolioCoinModel
             {
                 portId = port.portId,
-                coinId = trx.coinId,
+                coinId = coin.CoinId,
                 totalQuantity = trx.quantity,
                 totalMoney = trx.quantity * coin.current_price,
-                totalChange = trx.quantity * (coin.current_price - trx.coinPrice),
+                totalChange = 0,
                 averagePrice = coin.current_price
             };
             Console.WriteLine("portcoin is okay");
@@ -123,14 +134,18 @@ public class PortfolioService : MongoDBService
         }
         else
         {
-            Console.WriteLine($"Updating existing portfolio coin entry: {coininPort.id}");
-            var averesult = (coininPort.totalQuantity * coininPort.averagePrice + trx.quantity * trx.coinPrice) / (trx.quantity + coininPort.totalQuantity);
+            Console.WriteLine($"Updating existing portfolio coin entry: {coininPort.id} trx id: {trx.coinId}");
+            Console.WriteLine($"1{trx.coinId}");
+            Console.WriteLine("2", trx.coinId);
+
+
+            var averesult = (coininPort.totalQuantity * coininPort.averagePrice + trx.quantity * coin.current_price) / (trx.quantity + coininPort.totalQuantity);
             var filter = Builders<PortfolioCoinModel>.Filter.Eq(x => x.id, coininPort.id);
-            Console.WriteLine("4");
+
             var update = Builders<PortfolioCoinModel>.Update.Combine(
                 Builders<PortfolioCoinModel>.Update.Inc(x => x.totalQuantity, trx.quantity),
                 Builders<PortfolioCoinModel>.Update.Inc(x => x.totalMoney, trx.quantity * coin.current_price),
-                Builders<PortfolioCoinModel>.Update.Inc(x => x.totalChange, trx.quantity * (coin.current_price - trx.coinPrice)),
+                Builders<PortfolioCoinModel>.Update.Inc(x => x.totalChange, trx.quantity * coin.current_price),
                 Builders<PortfolioCoinModel>.Update.Set(x => x.averagePrice, averesult)
             );
             await _PortfolioCoinCollection.UpdateOneAsync(filter, update);
@@ -139,12 +154,15 @@ public class PortfolioService : MongoDBService
     }
     public async Task<PortfolioModel> SelltoPort(TransactionModel trx)
     {
+        Console.WriteLine($"from FE: , {trx.coinId}, {trx.quantity}, {trx.UserId}, {trx.quantity},price {trx.coinPrice}");
         if (trx == null)
         {
-            throw new ArgumentNullException(nameof(trx));
+            Console.WriteLine("null");
+
         }
 
-        var coin = await _CoinCollection.Find(x => x.CoinId == trx.coinId).FirstOrDefaultAsync();
+
+        var coin = await _CoinCollection.Find(x => x.Name == trx.coinId).FirstOrDefaultAsync();
         if (coin == null)
         {
             throw new Exception($"Coin not found");
@@ -157,7 +175,7 @@ public class PortfolioService : MongoDBService
         }
 
         var coinfilter = Builders<PortfolioCoinModel>.Filter.And(
-            Builders<PortfolioCoinModel>.Filter.Eq(x => x.coinId, trx.coinId),
+            Builders<PortfolioCoinModel>.Filter.Eq(x => x.coinId, coin.CoinId),
             Builders<PortfolioCoinModel>.Filter.Eq(x => x.portId, port.portId)
         );
         var coininPort = await _PortfolioCoinCollection.Find(coinfilter).FirstOrDefaultAsync();
@@ -171,12 +189,14 @@ public class PortfolioService : MongoDBService
         {
             throw new Exception("Insufficient coins to sell");
         }
+        var ttc = (coininPort.totalChange == 0) ? 0 : (-trx.quantity * (coin.current_price - trx.coinPrice));
+        Console.WriteLine($"total change is:{ttc}");
 
         var filter = Builders<PortfolioCoinModel>.Filter.Eq(x => x.id, coininPort.id);
         var update = Builders<PortfolioCoinModel>.Update.Combine(
             Builders<PortfolioCoinModel>.Update.Inc(x => x.totalQuantity, -trx.quantity),
             Builders<PortfolioCoinModel>.Update.Inc(x => x.totalMoney, -trx.quantity * coin.current_price),
-            Builders<PortfolioCoinModel>.Update.Inc(x => x.totalChange, -trx.quantity * (coin.current_price - trx.coinPrice))
+            Builders<PortfolioCoinModel>.Update.Inc(x => x.totalChange, ttc)
         );
 
         await _PortfolioCoinCollection.UpdateOneAsync(filter, update);
@@ -185,7 +205,7 @@ public class PortfolioService : MongoDBService
         var updatedCoin = await _PortfolioCoinCollection.Find(filter).FirstOrDefaultAsync();
         if (updatedCoin.totalQuantity <= 0)
         {
-            await RemoveCoinfromPortAsync(trx.UserId, trx.coinId);
+            await RemoveCoinfromPortAsync(trx.UserId, coin.CoinId);
         }
 
         return await _PortCollection.Find(x => x.userId == trx.UserId).FirstOrDefaultAsync();
@@ -193,8 +213,8 @@ public class PortfolioService : MongoDBService
     public async Task<PortfolioModel> ConvertInPort(string userid, string coinA, string coinB, double coinAquantity)
     {
         // Get coin info for both coins
-        var CoinA = await _CoinCollection.Find(x => x.CoinId == coinA).FirstOrDefaultAsync();
-        var CoinB = await _CoinCollection.Find(x => x.CoinId == coinB).FirstOrDefaultAsync();
+        var CoinA = await _CoinCollection.Find(x => x.Name == coinA).FirstOrDefaultAsync();
+        var CoinB = await _CoinCollection.Find(x => x.Name == coinB).FirstOrDefaultAsync();
         if (CoinA == null || CoinB == null)
         {
             throw new Exception("One or both coins not found");

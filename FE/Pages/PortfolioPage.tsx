@@ -54,6 +54,7 @@ export default function PortfolioPage() {
       } catch (error) {
         console.error("Error fetching portfolio:", error);
       } finally {
+        console.log(portfolio?.assetMoney);
         setIsLoading(false);
       }
     };
@@ -98,7 +99,7 @@ export default function PortfolioPage() {
       CreateAt: new Date().toISOString(),
     };
     try {
-      await axios.post(`http://localhost:5101/api/Transaction/Buy`, data);
+      await axios.post(`http://localhost:5101/api/Transactions/addTrx`, data);
       setIsBuyModalOpen(false);
     } catch (error) {
       console.error("Error during buy:", error);
@@ -119,8 +120,9 @@ export default function PortfolioPage() {
       notes: "Sell",
       CreateAt: new Date().toISOString(),
     };
+    console.log("selectedCoinId: ", selectedCoinId);
     try {
-      await axios.post(`http://localhost:5101/api/Transaction/Sell`, data);
+      await axios.post(`http://localhost:5101/api/Transactions/addTrx`, data);
       setIsSellModalOpen(false);
     } catch (error) {
       console.error("Error during sell:", error);
@@ -361,6 +363,7 @@ export default function PortfolioPage() {
                         setSelectedCoinHoldings(asset.totalQuantity);
                         setAmount(0);
                         setIsSellModalOpen(true);
+                        setSelectedCoinId(asset.coinName);
                       }}
                     >
                       Sell
