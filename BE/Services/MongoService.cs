@@ -8,7 +8,6 @@ public class MongoDBService
     protected readonly IMongoCollection<UserModel> _UserCollection;
     protected readonly IMongoCollection<CoinModel> _CoinCollection;
     protected readonly IMongoCollection<PortfolioCoinModel> _PortfolioCoinCollection;
-    protected readonly IMongoCollection<AnalyzationModel> _AnalyzationCollection;
     protected readonly IMongoCollection<FavoriteListModel> _FavoriteListCollection;
     protected readonly IMongoCollection<AdminModel> _AdminCollection;
     protected readonly IMongoCollection<PortfolioModel> _PortCollection;
@@ -23,7 +22,6 @@ public class MongoDBService
         var database = client.GetDatabase(config.GetValue<string>("MongoDB:Database"));
         _UserCollection = database.GetCollection<UserModel>("User");
         _CoinCollection = database.GetCollection<CoinModel>("Coins");
-        _AnalyzationCollection = database.GetCollection<AnalyzationModel>("Analyze");
         _AdminCollection = database.GetCollection<AdminModel>("Admin");
         _FavoriteListCollection = database.GetCollection<FavoriteListModel>("FavoriteList");
         _PortCollection = database.GetCollection<PortfolioModel>("Portfolio");

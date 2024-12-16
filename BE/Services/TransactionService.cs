@@ -78,10 +78,10 @@ public class TransactionService : MongoDBService
         };
         await _TransactionCollection.InsertOneAsync(data);
     }
-    public async Task<List<TransactionDto>> GetAllTrxAsync()
+    public async Task<List<TransactionModel>> GetAllTrxAsync()
     {
         var trx = await _TransactionCollection.Find(x => true).ToListAsync();
-        var result = new List<TransactionDto>();
+        var result = new List<TransactionModel>();
         if (trx == null)
         {
             throw new ArgumentNullException(nameof(trx), "cannot find trx");
@@ -90,18 +90,17 @@ public class TransactionService : MongoDBService
         {
             var user = await _UserCollection.Find(x => x.Id == data.UserId).FirstOrDefaultAsync();
             var coin = await _CoinCollection.Find(x => x.Name == data.coinId).FirstOrDefaultAsync();
-            var res = new TransactionDto
+            var res = new TransactionModel
             {
-                TransactionId = data.Id,
-
-                TrxType = data.trxType,
+                Id = data.Id,
+                UserId = data.UserId,
+                trxType = data.trxType,
                 buySource = data.buySource,
-                CoinName = coin.Name,
+                coinId = data.coinId,
                 coinPrice = data.coinPrice,
                 quantity = data.quantity,
-                totalAmount = data.quantity * coin.current_price,
-                Notes = data.notes,
-                TimeExecute = data.CreateAt
+                notes = data.notes,
+                CreateAt = data.CreateAt
             };
             result.Add(res);
         }

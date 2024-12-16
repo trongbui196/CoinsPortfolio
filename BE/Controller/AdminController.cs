@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using BE.Services;
 using Microsoft.AspNetCore.Identity;
 using StackExchange.Redis;
+using System.Security.Claims;
 
 [ApiController]
 [Route("api/Admin")]
@@ -29,7 +30,8 @@ public class AdminController : ControllerBase
         {
             throw new Exception("admin not exist");
         }
-        var passwordHash = new PasswordHasher<string>().HashPassword("hehe", password);
+        Console.WriteLine($"{username}, {admin.Password},{password}");
+
         var passwordcheck = new PasswordHasher<string>().VerifyHashedPassword(username, admin.Password, password);
         if (passwordcheck == PasswordVerificationResult.Failed)
         {
@@ -41,12 +43,16 @@ public class AdminController : ControllerBase
         }
         var accessToken = _jwtService.GenerateAccessToken(admin.Id, admin.Email, UserRole.Admin);
         var refreshToken = await _jwtService.GenerateRefreshToken(admin.Id);
+        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         Console.WriteLine($"Login successful for admin: {username} with access token: {accessToken} and refresh token: {refreshToken}");
+        Console.WriteLine($"Login role: {UserRole.Admin}");
+
         return Ok(new
         {
             accessToken,
             refreshToken,
-            tokenType = "Bearer"
+            tokenType = "Bearer",
+            admin.Id
         });
     }
 
@@ -58,12 +64,22 @@ public class AdminController : ControllerBase
         await _jwtService.RevokeRefreshToken(token.Token);
         return Ok(new { message = "Successfully logged out" });
     }
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [HttpPost("addAdmin")]
-    public async Task<IActionResult> CreateAdmin(AdminModel admin)
+    public async Task<IActionResult> CreateAdmin([FromBody] AdminModel admin)
     {
-        await _adminService.AddAdminrAsync(admin);
+        var data = new AdminModel
+        {
+            Username = admin.Username,
+            Email = admin.Email,
+            Password = HashPassword(admin.Password)
+        };
+        await _adminService.AddAdminrAsync(data);
         return Ok("admin added");
+    }
+    private string HashPassword(string password)
+    {
+        return new PasswordHasher<string>().HashPassword("hehe", password);
     }
 
 }

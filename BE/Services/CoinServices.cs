@@ -33,14 +33,18 @@ public class CoinServices : MongoDBService
         var updated = 0;
         foreach (var coin in coinlist)
         {
+
+
             var existcoin = await _CoinCollection.Find(x => x.CoinId == coin.Id).FirstOrDefaultAsync();
             if (existcoin != null)
             {
-                Console.WriteLine($"found {existcoin.Name}");
+                var oldprice = existcoin.current_price;
                 updated++;
-                var filter = Builders<CoinModel>.Filter.Eq(x => x.Symbol, coin.Id);
+                var filter = Builders<CoinModel>.Filter.Eq(x => x.CoinId, coin.Id);
+
+
                 var update = Builders<CoinModel>.Update
-                .Set(c => c.CoinId, coin.Id)
+
                 .Set(c => c.current_price, coin.current_price)
                 .Set(c => c.market_cap, coin.market_cap)
                 .Set(c => c.total_volume, coin.total_volume)
@@ -54,7 +58,9 @@ public class CoinServices : MongoDBService
                 .Set(c => c.ath, coin.ath)
                 .Set(c => c.atl, coin.atl)
                 .Set(c => c.UpdateAt, DateTime.Now);
-                await _CoinCollection!.UpdateOneAsync(filter, update);
+                await _CoinCollection.UpdateOneAsync(filter, update);
+                //Console.WriteLine($"{coin.Name} updated from {oldprice} to {coin.current_price}");
+
             }
             else Console.WriteLine("found nothing");
 

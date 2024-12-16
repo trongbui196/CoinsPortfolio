@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { clearUser } from "../store/userSlice"; // Import the action
+import { clearUser } from "../store/userSlice";
 import { RootState } from "../store/store";
 
 export function SiteHeader() {
   const dispatch = useDispatch();
-  const userid = useSelector((state: RootState) => state.user.userid); // Get userid from Redux state
+  const userid = useSelector((state: RootState) => state.user.userid);
   const accesstoken = useSelector((state: RootState) => state.user.accessToken);
   const handleLogout = () => {
     dispatch(clearUser()); // Clear userid on logout
@@ -16,7 +16,7 @@ export function SiteHeader() {
         <div className="flex items-center space-x-2">
           <a href="/" className="flex items-center space-x-2">
             <div className="text-xl font-bold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
-              Crypto Planet
+              Crypto by TB
             </div>
           </a>
         </div>

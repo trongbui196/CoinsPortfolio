@@ -34,13 +34,14 @@ public class UserController : ControllerBase
         return Ok(data);
     }
     [HttpGet("{userid}")]
-    [Authorize(Roles = "Customer")]
+    //[Authorize(Roles = "Customer")]
     public async Task<IActionResult> GetUserById(string userid)
     {
         Console.WriteLine(ClaimTypes.NameIdentifier);
 
         // Get the current user's ID from their token
         var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
 
         // Check if user is trying to access their own data
         if (currentUserId != userid)
@@ -162,5 +163,5 @@ public class UserController : ControllerBase
     {
         return new PasswordHasher<string>().HashPassword("hehe", password);
     }
-    // to do list: replace method use refreshtoken with userid and use jwtservice.findrefreshtoken 
+
 }

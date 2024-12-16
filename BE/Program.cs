@@ -76,7 +76,8 @@ builder.Services.AddCors(options =>
                     "https://coins-portfolio-git-master-tofn001gmailcoms-projects.vercel.app",
                     "https://coins-portfolio-hcna1c8xu-tofn001gmailcoms-projects.vercel.app",
                     "http://localhost:5173",
-                    "http://localhost:5101"
+                    "http://localhost:5101",
+                     "http://localhost:5103"
                 )
                 .AllowAnyMethod()
                 .AllowAnyHeader()
@@ -98,7 +99,8 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = "http://localhost:5101",
         ValidAudiences = new[] { "http://localhost:5101",
-                                "http://localhost:3001"   },
+                                "http://localhost:3001",
+                                "http://localhost:5103"   },
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 
