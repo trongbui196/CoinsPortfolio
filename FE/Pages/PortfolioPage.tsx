@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import baseurl from "../baseurl";
 import { useNavigate } from "react-router-dom";
 import {
   PieChart,
@@ -47,8 +47,8 @@ export default function PortfolioPage() {
   useEffect(() => {
     const fetchPortfolio = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5101/api/Porfolio/getPortfolio?userid=${userId}`
+        const response = await baseurl.get(
+          `/api/Porfolio/getPortfolio?userid=${userId}`
         );
         if (response.data.msg === "Empty") {
           setPortfolio(null);
@@ -69,8 +69,8 @@ export default function PortfolioPage() {
 
   const handleDeposit = async () => {
     try {
-      await axios.post(
-        `http://localhost:5101/api/Transactions/${userId}/Deposit?amount=${amount}
+      await baseurl.post(
+        `/api/Transactions/${userId}/Deposit?amount=${amount}
 `
       );
       setIsDepositModalOpen(false);
@@ -84,8 +84,8 @@ export default function PortfolioPage() {
   };
   const handleWithdraw = async (coinId: string) => {
     try {
-      await axios.post(
-        `http://localhost:5101/api/Transactions/${userId}/Withdraw?amount=${amount}&coinid=${coinId}`
+      await baseurl.post(
+        `/api/Transactions/${userId}/Withdraw?amount=${amount}&coinid=${coinId}`
       );
       setIsWithdrawModalOpen(false);
     } catch (error) {
@@ -104,7 +104,7 @@ export default function PortfolioPage() {
       CreateAt: new Date().toISOString(),
     };
     try {
-      await axios.post(`http://localhost:5101/api/Transactions/addTrx`, data);
+      await baseurl.post(`/api/Transactions/addTrx`, data);
       setIsBuyModalOpen(false);
     } catch (error) {
       console.error("Error during buy:", error);
@@ -127,7 +127,7 @@ export default function PortfolioPage() {
     };
     console.log("selectedCoinId: ", selectedCoinId);
     try {
-      await axios.post(`http://localhost:5101/api/Transactions/addTrx`, data);
+      await baseurl.post(`/api/Transactions/addTrx`, data);
       setIsSellModalOpen(false);
     } catch (error) {
       console.error("Error during sell:", error);

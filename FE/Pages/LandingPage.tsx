@@ -2,25 +2,26 @@ import { styled } from "@mui/material/styles";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
+// Container with background image
 const Container = styled("div")({
   height: "100vh",
   width: "100vw",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  backgroundColor: "#ff0000",
+  backgroundImage: `url('https://plus.unsplash.com/premium_photo-1681400668073-a1947604dd36?q=80&w=1779&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
   position: "fixed",
   top: 0,
   left: 0,
   zIndex: 9999,
 });
 
-const HelloText = styled("h1")({
+const HelloText = styled("div")({
   fontFamily: "'Comfortaa', cursive",
-  fontSize: "4rem",
   color: "#ffffff",
-  textTransform: "uppercase",
-  letterSpacing: "2px",
+  textAlign: "center",
   animation: "fadeIn 1.5s ease-in",
   "@keyframes fadeIn": {
     from: {
@@ -34,6 +35,23 @@ const HelloText = styled("h1")({
   },
 });
 
+const FLine = styled("h1")({
+  fontSize: "4rem",
+  lineHeight: "1",
+  color: "black",
+  textTransform: "uppercase",
+  letterSpacing: "2px",
+  margin: 0,
+});
+
+const SLine = styled("h2")({
+  fontSize: "2rem",
+  color: "black",
+  textTransform: "uppercase",
+  letterSpacing: "1px",
+  margin: 0,
+});
+
 const ButtonContainer = styled("div")({
   position: "absolute",
   bottom: "10%",
@@ -42,18 +60,18 @@ const ButtonContainer = styled("div")({
   justifyContent: "center",
 });
 
+// Styled Button
 const StyledButton = styled(Button)({
   padding: "10px 30px",
-  backgroundColor: "rgba(255, 255, 255, 0.1)",
+
   color: "#ffffff",
   borderRadius: "25px",
   textTransform: "none",
-  fontSize: "1.2rem",
+  fontSize: "1.5rem",
   fontFamily: "'Comfortaa', cursive",
   transition: "all 0.3s ease",
   "&:hover": {
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    transform: "translateY(-3px)",
+    transform: "translateY(-5px)",
   },
 });
 
@@ -61,9 +79,13 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   console.log("Landing page rendered");
+
   return (
     <Container>
-      <HelloText>Hello</HelloText>
+      <HelloText>
+        <FLine>Coin Portfolio</FLine>
+        <SLine>by Trong Bui</SLine>
+      </HelloText>
       <ButtonContainer>
         <StyledButton onClick={() => navigate("/market")}>Market</StyledButton>
         <StyledButton onClick={() => navigate("/portfolio")}>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import baseurl from "../baseurl";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import Modal from "../Components/Modal"; // Adjust the import path as necessary
@@ -29,9 +29,7 @@ export default function Transaction() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get<Userif[]>(
-          "http://localhost:5101/api/User/GetUsers"
-        );
+        const response = await baseurl.get<Userif[]>("/api/User/GetUsers");
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -52,15 +50,11 @@ export default function Transaction() {
     if (selectedUser) {
       try {
         console.log(`${accesstoken}`);
-        await axios.put(
-          `http://localhost:5101/api/User/UpdateUser`,
-          selectedUser,
-          {
-            headers: {
-              Authorization: `Bearer ${accesstoken}`, // Add the Authorization header
-            },
-          }
-        );
+        await baseurl.put("/api/User/UpdateUser", selectedUser, {
+          headers: {
+            Authorization: `Bearer ${accesstoken}`, // Add the Authorization header
+          },
+        });
         setUser(User.map((u) => (u.id === selectedUser.id ? selectedUser : u)));
         setModalOpen(false);
       } catch (error) {

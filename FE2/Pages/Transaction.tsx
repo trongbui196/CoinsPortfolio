@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import baseurl from "../baseurl";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 
@@ -24,8 +24,8 @@ export default function Transaction() {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get<Transaction[]>(
-          "http://localhost:5101/api/Transactions/getAllTrx4Admin"
+        const response = await baseurl.get<Transaction[]>(
+          "/api/Transactions/getAllTrx4Admin"
         );
         setTransactions(response.data);
       } catch (error) {

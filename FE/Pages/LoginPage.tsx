@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import axios from "axios";
+import baseurl from "../baseurl";
 import { setUser } from "../store/userSlice";
 import { useNavigate } from "react-router-dom";
 export default function LoginPage() {
@@ -37,12 +37,10 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = isRegister
-      ? "http://localhost:5101/api/User/Register"
-      : "http://localhost:5101/api/User/Login";
+    const url = isRegister ? "/api/User/Register" : "/api/User/Login";
     const data = isRegister ? RegisterformData : LoginformData;
     try {
-      const response = await axios.post(url, data);
+      const response = await baseurl.post(url, data);
       console.log(response.data);
       if (!isRegister && response.data.id && response.data.accessToken) {
         console.log("login success");

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import baseurl from "../baseurl";
 import Modal from "../components/Modal";
 import { Star } from "lucide-react";
 import {
@@ -57,8 +57,8 @@ export default function CoinDetailPage() {
     const fetchChartData = async () => {
       setIsLoadingChart(true);
       try {
-        const response = await axios.get(
-          `http://localhost:5101/api/Coins/getChartData/${coinId}?period=${selectedPeriod}`
+        const response = await baseurl.get(
+          `/api/Coins/getChartData/${coinId}?period=${selectedPeriod}`
         );
         const formattedData = response.data.prices.map(
           (item: [number, number]) => ({
@@ -77,8 +77,8 @@ export default function CoinDetailPage() {
     const fetchData = async () => {
       setIsLoadingCoin(true);
       try {
-        const response = await axios.get(
-          `http://localhost:5101/api/Coins/GetCoinByName/${coinId}`
+        const response = await baseurl.get(
+          `/api/Coins/GetCoinByName/${coinId}`
         );
         setCoinInfo(response.data);
       } catch (error) {
@@ -95,9 +95,7 @@ export default function CoinDetailPage() {
   useEffect(() => {
     const checkWatchlistStatus = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5101/api/FavList/${userId}`
-        );
+        const response = await baseurl.get(`/api/FavList/${userId}`);
         const favoriteList = response.data;
         const isInList = favoriteList.some(
           (coin: { coinId: string }) => coin.coinId === coinId
@@ -118,8 +116,8 @@ export default function CoinDetailPage() {
     if (isInWatchlist) return;
 
     try {
-      const response = await axios.post(
-        `http://localhost:5101/api/FavList/${userId}/Add/${coinId}`
+      const response = await baseurl.post(
+        `/api/FavList/${userId}/Add/${coinId}`
       );
 
       if (response.status === 200) {
@@ -138,8 +136,8 @@ export default function CoinDetailPage() {
   const handleBuy = async () => {
     // Fetch the coin name using the coin ID
     try {
-      const response = await axios.get(
-        `http://localhost:5101/api/Coins/GetNameById?coinId=${coinId}`
+      const response = await baseurl.get(
+        `/api/Coins/GetNameById?coinId=${coinId}`
       );
       const coinName = response.data; // Assuming the API returns the coin name directly
 
@@ -153,7 +151,7 @@ export default function CoinDetailPage() {
         CreateAt: new Date().toISOString(),
       };
 
-      await axios.post(`http://localhost:5101/api/Transactions/addTrx`, data);
+      await baseurl.post(`/api/Transactions/addTrx`, data);
       setIsBuyModalOpen(false);
     } catch (error) {
       console.error("Error during buy:", error);

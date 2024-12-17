@@ -128,7 +128,7 @@ public class CoinServices : MongoDBService
         try
         {   //symbol like 'bitcoin' 
             string url = $"{_baseUrl}coins/{coinid}/market_chart?vs_currency=usd&days={days}&x_cg_demo_api_key={_apiKey}";
-
+            
             using var httpClient = new HttpClient();
             var response = await httpClient.GetStringAsync(url);
             var chartData = JsonConvert.DeserializeObject<ChartDataModel>(response);

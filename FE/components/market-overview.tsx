@@ -1,8 +1,7 @@
 import { Card, CardContent } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useState, useEffect } from "react";
-
+import baseurl from "../baseurl";
 interface Coin {
   symbol: string;
   name: string;
@@ -21,9 +20,7 @@ export function MarketOverview() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<Coin[]>(
-          "http://localhost:5101/api/Coins/getTop5Gainers"
-        );
+        const response = await baseurl.get<Coin[]>("/api/Coins/getTop5Gainers");
         setMarketData(response.data);
       } catch (error) {
         console.error("Failed to fetch market data:", error);

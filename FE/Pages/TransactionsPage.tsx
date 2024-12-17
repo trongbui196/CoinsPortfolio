@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import baseurl from "../baseurl";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 
@@ -27,9 +27,7 @@ export default function TransactionsPage() {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5101/api/Transactions/${userId}/Trxs`
-        );
+        const response = await baseurl.get(`/api/Transactions/${userId}/Trxs`);
         setTransactions(response.data);
       } catch (error) {
         console.error("Error fetching transactions:", error);
