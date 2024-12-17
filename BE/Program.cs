@@ -9,7 +9,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(80);  // Ensure it listens on all IP addresses and port 80
+});
 builder.Configuration.AddJsonFile("appsettings.json");
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
@@ -77,7 +80,8 @@ builder.Services.AddCors(options =>
                     "https://coins-portfolio-hcna1c8xu-tofn001gmailcoms-projects.vercel.app",
                     "http://localhost:5173",
                     "http://localhost:5101",
-                     "http://localhost:5103"
+                     "http://localhost:5103",
+                     "http://localhost/*"
                 )
                 .AllowAnyMethod()
                 .AllowAnyHeader()
