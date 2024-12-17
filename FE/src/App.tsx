@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { SiteHeader } from "../components/site-header";
 import CoinPage from "../Pages/CoinDetailPage";
 import MarketPage from "../Pages/MarketPage";
+import React from "react"
 import LandingPage from "../Pages/LandingPage";
 import WListPage from "../Pages/WListPage";
 import PortfolioPage from "../Pages/PortfolioPage";
@@ -12,7 +13,7 @@ function App() {
     <Router>
       <SiteHeader />
 
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen w-full bg-background max-w-screen-lg mx-auto">
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/market" element={<MarketPage />} />

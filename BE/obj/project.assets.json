@@ -3557,26 +3557,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\An\\.nuget\\packages\\": {}
+    "C:\\Users\\tofn0\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\BE\\BE.csproj",
+      "projectUniqueName": "C:\\Users\\tofn0\\OneDrive\\Desktop\\New folder\\New folder\\CoinsPortfolio\\be\\BE.csproj",
       "projectName": "BE",
-      "projectPath": "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\BE\\BE.csproj",
-      "packagesPath": "C:\\Users\\An\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\BE\\obj\\",
+      "projectPath": "C:\\Users\\tofn0\\OneDrive\\Desktop\\New folder\\New folder\\CoinsPortfolio\\be\\BE.csproj",
+      "packagesPath": "C:\\Users\\tofn0\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\tofn0\\OneDrive\\Desktop\\New folder\\New folder\\CoinsPortfolio\\be\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\An\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\tofn0\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3668,7 +3666,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\8.0.307/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

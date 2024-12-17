@@ -4,6 +4,8 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 
 interface Coin {
+  id: string;
+  coinId: string;
   symbol: string;
   name: string;
   image: string;
@@ -12,6 +14,7 @@ interface Coin {
   low_24h: number;
   high_24h: number;
 }
+
 
 export function MarketOverview() {
   const navigate = useNavigate();
@@ -63,7 +66,7 @@ export function MarketOverview() {
                   <img src={coin.image} alt={coin.name} className="w-8 h-8" />
                   <div>
                     <div
-                      onClick={() => handleCoinClick(coin.symbol)}
+                      onClick={() => handleCoinClick(coin.coinId)}
                       className="hover:text-blue-500 font-semibold cursor-pointer text-black"
                     >
                       {coin.name}

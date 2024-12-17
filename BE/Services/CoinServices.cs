@@ -45,24 +45,24 @@ public class CoinServices : MongoDBService
 
                 var update = Builders<CoinModel>.Update
 
-                .Set(c => c.current_price, coin.current_price)
-                .Set(c => c.market_cap, coin.market_cap)
-                .Set(c => c.total_volume, coin.total_volume)
-                .Set(c => c.high_24h, coin.high_24h)
-                .Set(c => c.low_24h, coin.low_24h)
-                .Set(c => c.price_change_24h, coin.price_change_24h)
-                .Set(c => c.price_change_percentage_24h, coin.price_change_percentage_24h)
-                .Set(c => c.circulating_supply, coin.circulating_supply)
-                .Set(c => c.total_supply, coin.total_supply)
-                .Set(c => c.max_supply, coin.max_supply)
-                .Set(c => c.ath, coin.ath)
-                .Set(c => c.atl, coin.atl)
+                .Set(c => c.current_price, coin.current_price??0)
+                .Set(c => c.market_cap, coin.market_cap??0)
+                .Set(c => c.total_volume, coin.total_volume??0)
+                .Set(c => c.high_24h, coin.high_24h??0)
+                .Set(c => c.low_24h, coin.low_24h??0)
+                .Set(c => c.price_change_24h, coin.price_change_24h??0)
+                .Set(c => c.price_change_percentage_24h, coin.price_change_percentage_24h??0)
+                .Set(c => c.circulating_supply, coin.circulating_supply??0)
+                .Set(c => c.total_supply, coin.total_supply??0)
+                .Set(c => c.max_supply, coin.max_supply??0)
+                .Set(c => c.ath, coin.ath??0)
+                .Set(c => c.atl, coin.atl??0)
                 .Set(c => c.UpdateAt, DateTime.Now);
                 await _CoinCollection.UpdateOneAsync(filter, update);
                 //Console.WriteLine($"{coin.Name} updated from {oldprice} to {coin.current_price}");
 
             }
-            else Console.WriteLine("found nothing");
+            else Console.WriteLine($"{coin.Name} not updated");
 
         }
         return $"updated {updated} coins";

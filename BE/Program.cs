@@ -72,6 +72,7 @@ builder.Services.AddCors(options =>
         {
             policy
                 .WithOrigins(
+                    "https://adminfecoinport.vercel.app/",
                     "https://coins-portfolio-cyan.vercel.app",
                     "https://coins-portfolio-git-master-tofn001gmailcoms-projects.vercel.app",
                     "https://coins-portfolio-hcna1c8xu-tofn001gmailcoms-projects.vercel.app",
