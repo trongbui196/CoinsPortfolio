@@ -100,9 +100,8 @@ const Dashboard = () => {
   return (
     <div className="p-5">
       <h2 className="text-2xl font-bold mb-5">
-        {userId ? `Hello ${userId}` : "Dashboard"}
-      </h2>
-      {/* Card Divs */}
+        {userId ? (<>
+        
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-5">
         <div className="bg-white p-5 rounded-lg shadow">
           <h3 className="text-lg font-semibold">Total Users</h3>
@@ -257,6 +256,9 @@ const Dashboard = () => {
           </ResponsiveContainer>
         </div>
       </div>
+        </>) : "required login"}
+      </h2>
+     
     </div>
   );
 };
