@@ -75,9 +75,7 @@ export default function Transaction() {
 
   return (
     <>
-      <h2>{userId ? `${userId}` : "Login required"}</h2>
-
-      <table className="min-w-full bg-white border border-gray-300 rounded-lg">
+      <h2>{userId ? (<><table className="min-w-full bg-white border border-gray-300 rounded-lg">
         <thead>
           <tr>
             <th className="border px-4 py-2 bg-gray-300">Username</th>
@@ -153,7 +151,9 @@ export default function Transaction() {
             </button>
           </>
         )}
-      </Modal>
+      </Modal></>) : "Login required"}</h2>
+
+      
     </>
   );
 }

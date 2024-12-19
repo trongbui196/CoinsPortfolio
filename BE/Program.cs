@@ -78,7 +78,8 @@ builder.Services.AddCors(options =>
                     "https://coins-portfolio-hcna1c8xu-tofn001gmailcoms-projects.vercel.app",
                     "http://localhost:5173",
                     "http://localhost:5101",
-                     "http://localhost:5103"
+                     "http://localhost:5103",
+                      "http://localhost:5104"
                 )
                 .AllowAnyMethod()
                 .AllowAnyHeader()
