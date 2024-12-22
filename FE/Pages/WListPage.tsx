@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import baseurl from "../baseurl";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
 import { useSelector } from "react-redux";
@@ -28,14 +28,11 @@ export default function WListPage() {
   useEffect(() => {
     const fetchWatchlist = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5101/api/FavList/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accesstoken}`, // Add the Authorization header
-            },
-          }
-        );
+        const response = await baseurl.get(`/api/FavList/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${accesstoken}`, // Add the Authorization header
+          },
+        });
         setWatchlistData(response.data);
       } catch (error) {
         console.error("Error fetching watchlist:", error);

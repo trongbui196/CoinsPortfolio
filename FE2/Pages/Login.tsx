@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import baseurl from "../baseurl";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setUser } from "../store/userSlice"; // Adjust the import based on your Redux setup
@@ -16,13 +16,9 @@ export default function Login() {
     setError(""); // Clear previous errors
 
     try {
-      const response = await axios.post(
-        `http://localhost:5101/api/Admin/AdminLogin`,
-        null,
-        {
-          params: { username, password },
-        }
-      );
+      const response = await baseurl.post(`/api/Admin/AdminLogin`, null, {
+        params: { username, password },
+      });
       if (response.data.id && response.data.accessToken) {
         console.log("login success");
         dispatch(

@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
-import axios from "axios";
-
+import baseurl from "../baseurl";
 interface Coin {
   id: string;
   coinId: string;
@@ -25,11 +24,9 @@ export function MarketTable() {
     setIsLoading(true);
     try {
       const endpoint =
-        count === 20
-          ? "http://localhost:5101/api/Coins/get20Coin"
-          : "http://localhost:5101/api/Coins/getCoins";
+        count === 20 ? "/api/Coins/get20Coin" : "/api/Coins/getCoins";
 
-      const response = await axios.get<Coin[]>(endpoint);
+      const response = await baseurl.get<Coin[]>(endpoint);
       setMarketData(response.data);
     } catch (error) {
       console.error("Failed to fetch market data:", error);

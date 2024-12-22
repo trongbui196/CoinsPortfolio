@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import baseurl from "../baseurl";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 interface Coin {
@@ -32,9 +32,7 @@ export default function Coins() {
   useEffect(() => {
     const fetchCoins = async () => {
       try {
-        const response = await axios.get<Coin[]>(
-          "http://localhost:5101/api/Coins/getCoins"
-        );
+        const response = await baseurl.get<Coin[]>("/api/Coins/getCoins");
         setCoins(response.data);
       } catch (error) {
         console.error("Error fetching coins:", error);
@@ -48,10 +46,8 @@ export default function Coins() {
   const handleUpdate = async () => {
     setUpdateMessage("Updating...");
     try {
-      await axios.put("http://localhost:5101/api/Coins/updateCoins");
-      const response = await axios.get<Coin[]>(
-        "http://localhost:5101/api/Coins/getCoins"
-      );
+      await baseurl.put("/api/Coins/updateCoins");
+      const response = await baseurl.get<Coin[]>("/api/Coins/getCoins");
       setCoins(response.data);
       const currentTime = new Date().toLocaleTimeString();
       setUpdateMessage(`Updated at ${currentTime}`);

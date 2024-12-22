@@ -9,7 +9,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(80);  // Ensure it listens on all IP addresses and port 80
+});
 builder.Configuration.AddJsonFile("appsettings.json");
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
@@ -79,7 +82,11 @@ builder.Services.AddCors(options =>
                     "http://localhost:5173",
                     "http://localhost:5101",
                      "http://localhost:5103",
+<<<<<<< HEAD
                       "http://localhost:5104"
+=======
+                     "http://localhost/*"
+>>>>>>> 360aa2a5b40c750785afcbfa1f74051a90f84c69
                 )
                 .AllowAnyMethod()
                 .AllowAnyHeader()
