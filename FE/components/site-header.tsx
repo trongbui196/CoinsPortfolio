@@ -5,7 +5,6 @@ import { RootState } from "../store/store";
 export function SiteHeader() {
   const dispatch = useDispatch();
   const userid = useSelector((state: RootState) => state.user.userid);
-  const accesstoken = useSelector((state: RootState) => state.user.accessToken);
   const handleLogout = () => {
     dispatch(clearUser()); // Clear userid on logout
   };
