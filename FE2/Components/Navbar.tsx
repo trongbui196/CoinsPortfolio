@@ -10,7 +10,6 @@ export default function Navbar() {
   const handleLogout = () => {
     dispatch(clearUser()); // Clear userid on logout
   };
-  console.log(`aaaa: ${userid}, ${accesstoken}`);
   return (
     <div className="w-1/5  bg-orange-600 text-white p-5 py-16">
       <div className="text-2xl font-bold mb-5">Admin Logo</div>

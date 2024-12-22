@@ -20,7 +20,6 @@ export default function Login() {
         params: { username, password },
       });
       if (response.data.id && response.data.accessToken) {
-        console.log("login success");
         dispatch(
           setUser({
             userid: response.data.id,

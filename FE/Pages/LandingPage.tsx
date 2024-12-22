@@ -78,8 +78,6 @@ const StyledButton = styled(Button)({
 const LandingPage = () => {
   const navigate = useNavigate();
 
-  console.log("Landing page rendered");
-
   return (
     <Container>
       <HelloText>

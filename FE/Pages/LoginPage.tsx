@@ -41,9 +41,7 @@ export default function LoginPage() {
     const data = isRegister ? RegisterformData : LoginformData;
     try {
       const response = await baseurl.post(url, data);
-      console.log(response.data);
       if (!isRegister && response.data.id && response.data.accessToken) {
-        console.log("login success");
         dispatch(
           setUser({
             userid: response.data.id,
@@ -58,9 +56,6 @@ export default function LoginPage() {
       console.error("Error:", error);
       setErrorMessage("Login failed. Please check your credentials."); // Set error message
     }
-    console.log("url:", url);
-    console.log("data:", data);
-    console.log(isRegister);
   };
 
   return (

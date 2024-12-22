@@ -59,7 +59,6 @@ export default function PortfolioPage() {
       } catch (error) {
         console.error("Error fetching portfolio:", error);
       } finally {
-        console.log(portfolio?.assetMoney);
         setIsLoading(false);
       }
     };
@@ -125,7 +124,6 @@ export default function PortfolioPage() {
       notes: "Sell",
       CreateAt: new Date().toISOString(),
     };
-    console.log("selectedCoinId: ", selectedCoinId);
     try {
       await baseurl.post(`/api/Transactions/addTrx`, data);
       setIsSellModalOpen(false);

@@ -100,9 +100,7 @@ export default function CoinDetailPage() {
         const isInList = favoriteList.some(
           (coin: { coinId: string }) => coin.coinId === coinId
         );
-        if (isInList) {
-          console.log(" co trong list");
-        } else console.log("k co trong list");
+
         setIsInWatchlist(isInList);
       } catch (error) {
         console.error("Error checking watchlist status:", error);
