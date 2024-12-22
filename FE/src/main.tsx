@@ -28,7 +28,9 @@ async function startApp() {
 
 function isProduction() {
   // Update with your production domain
-  return window.location.hostname.indexOf("http://localhost:511173") > -1;
+  return (
+    window.location.hostname.indexOf("https://adminfecoinport.vercel.app/") > -1
+  );
 }
 
 startApp();

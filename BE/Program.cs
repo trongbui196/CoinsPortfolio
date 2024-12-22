@@ -75,13 +75,18 @@ builder.Services.AddCors(options =>
         {
             policy
                 .WithOrigins(
+                    "https://adminfecoinport.vercel.app/",
                     "https://coins-portfolio-cyan.vercel.app",
                     "https://coins-portfolio-git-master-tofn001gmailcoms-projects.vercel.app",
                     "https://coins-portfolio-hcna1c8xu-tofn001gmailcoms-projects.vercel.app",
                     "http://localhost:5173",
                     "http://localhost:5101",
                      "http://localhost:5103",
+<<<<<<< HEAD
+                      "http://localhost:5104"
+=======
                      "http://localhost/*"
+>>>>>>> 360aa2a5b40c750785afcbfa1f74051a90f84c69
                 )
                 .AllowAnyMethod()
                 .AllowAnyHeader()

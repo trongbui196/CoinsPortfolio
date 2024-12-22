@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\BE\\BE.csproj": {}
+    "C:\\Users\\An\\Downloads\\1911549467_BuiDucTrong_19dth1d\\Source code\\CoinsPortfolio\\BE\\BE.csproj": {}
   },
   "projects": {
-    "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\BE\\BE.csproj": {
+    "C:\\Users\\An\\Downloads\\1911549467_BuiDucTrong_19dth1d\\Source code\\CoinsPortfolio\\BE\\BE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\BE\\BE.csproj",
+        "projectUniqueName": "C:\\Users\\An\\Downloads\\1911549467_BuiDucTrong_19dth1d\\Source code\\CoinsPortfolio\\BE\\BE.csproj",
         "projectName": "BE",
-        "projectPath": "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\BE\\BE.csproj",
+        "projectPath": "C:\\Users\\An\\Downloads\\1911549467_BuiDucTrong_19dth1d\\Source code\\CoinsPortfolio\\BE\\BE.csproj",
         "packagesPath": "C:\\Users\\An\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\An\\Desktop\\TrongD\\FinalThesis\\BE\\obj\\",
+        "outputPath": "C:\\Users\\An\\Downloads\\1911549467_BuiDucTrong_19dth1d\\Source code\\CoinsPortfolio\\BE\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\An\\AppData\\Roaming\\NuGet\\NuGet.Config",

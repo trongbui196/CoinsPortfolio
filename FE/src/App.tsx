@@ -12,7 +12,7 @@ function App() {
     <Router>
       <SiteHeader />
 
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen w-4/5 bg-background  mx-auto">
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/market" element={<MarketPage />} />
