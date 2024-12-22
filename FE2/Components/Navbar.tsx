@@ -5,7 +5,6 @@ import { RootState } from "../store/store";
 export default function Navbar() {
   const dispatch = useDispatch();
   const userid = useSelector((state: RootState) => state.user.userid); // Get userid from Redux state
-  const accesstoken = useSelector((state: RootState) => state.user.accessToken);
 
   const handleLogout = () => {
     dispatch(clearUser()); // Clear userid on logout
