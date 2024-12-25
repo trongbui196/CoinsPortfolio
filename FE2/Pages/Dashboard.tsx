@@ -98,166 +98,175 @@ const Dashboard = () => {
   };
   const userId = useSelector((state: RootState) => state.user.userid);
   return (
-    <div className="p-5">
-      <h2 className="text-2xl font-bold mb-5">
-        {userId ? `Hello ${userId}` : "Dashboard"}
-      </h2>
-      {/* Card Divs */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-5">
-        <div className="bg-white p-5 rounded-lg shadow">
-          <h3 className="text-lg font-semibold">Total Users</h3>
-          <p className="text-2xl font-bold">{newUserList.length + 1000}</p>{" "}
-          {/* Mock total users */}
-        </div>
-        <div className="bg-white p-5 rounded-lg shadow">
-          <h3 className="text-lg font-semibold">Average User Profit</h3>
-          <p className="text-2xl font-bold">$1500</p>{" "}
-          {/* Mock average profit */}
-        </div>
-        <div className="bg-white p-5 rounded-lg shadow">
-          <h3 className="text-lg font-semibold">Number of Coins</h3>
-          <p className="text-2xl font-bold">50</p> {/* Mock number of coins */}
-        </div>
-        <div className="bg-white p-5 rounded-lg shadow">
-          <h3 className="text-lg font-semibold">Last Coin Update Time</h3>
-          <p className="text-2xl font-bold">2023-09-30 19:30:21</p>{" "}
-          {/* Mock last update time */}
-        </div>
-      </div>
+    <>
+      {userId ? (
+        <div className="p-5">
+          <h2 className="text-2xl font-bold mb-5">
+            {userId ? `Hello ${userId}` : "Dashboard"}
+          </h2>
+          {/* Card Divs */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-5">
+            <div className="bg-white p-5 rounded-lg shadow">
+              <h3 className="text-lg font-semibold">Total Users</h3>
+              <p className="text-2xl font-bold">
+                {newUserList.length + 1000}
+              </p>{" "}
+              {/* Mock total users */}
+            </div>
+            <div className="bg-white p-5 rounded-lg shadow">
+              <h3 className="text-lg font-semibold">Average User Profit</h3>
+              <p className="text-2xl font-bold">$1500</p>{" "}
+              {/* Mock average profit */}
+            </div>
+            <div className="bg-white p-5 rounded-lg shadow">
+              <h3 className="text-lg font-semibold">Number of Coins</h3>
+              <p className="text-2xl font-bold">50</p>{" "}
+              {/* Mock number of coins */}
+            </div>
+            <div className="bg-white p-5 rounded-lg shadow">
+              <h3 className="text-lg font-semibold">Last Coin Update Time</h3>
+              <p className="text-2xl font-bold">2023-09-30 19:30:21</p>{" "}
+              {/* Mock last update time */}
+            </div>
+          </div>
 
-      {/* User Activity Chart */}
-      <div className="bg-white p-5 rounded-lg shadow mb-5">
-        <h3 className="text-xl font-semibold">User Activity</h3>
-        <button
-          className="border p-2 rounded-md m-2"
-          onClick={() => setFilter("30days")}
-        >
-          30 days
-        </button>
-        <button
-          className="border p-2 rounded-md m-2"
-          onClick={() => setFilter("7days")}
-        >
-          7 days
-        </button>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={filteredData()}>
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-
-            <Line
-              type="monotone"
-              dataKey="users"
-              stroke="#4f46e5"
-              strokeWidth={2}
-              dot={false}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Row 2: User Activity and New User List */}
-      <div className="grid grid-cols-3 gap-4 mb-5">
-        <div className=" col-span-2 gap-4 ">
-          <div className="bg-white p-5 rounded-lg shadow">
-            <h3 className="text-xl font-semibold">Watchlist Activity</h3>
+          {/* User Activity Chart */}
+          <div className="bg-white p-5 rounded-lg shadow mb-5">
+            <h3 className="text-xl font-semibold">User Activity</h3>
+            <button
+              className="border p-2 rounded-md m-2"
+              onClick={() => setFilter("30days")}
+            >
+              30 days
+            </button>
+            <button
+              className="border p-2 rounded-md m-2"
+              onClick={() => setFilter("7days")}
+            >
+              7 days
+            </button>
             <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={watchlistActivityData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  fill="#8884d8"
-                  label
-                >
-                  {watchlistActivityData.map((index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={
-                        index.index === 0
-                          ? "#A888B5"
-                          : index.index === 1
-                          ? "#EFB6C8"
-                          : "#8174A0"
-                      }
-                    />
-                  ))}
-                </Pie>
+              <LineChart data={filteredData()}>
+                <XAxis dataKey="date" />
+                <YAxis />
                 <Tooltip />
-                <Legend
-                  layout="vertical"
-                  verticalAlign="middle"
-                  align="right"
+
+                <Line
+                  type="monotone"
+                  dataKey="users"
+                  stroke="#4f46e5"
+                  strokeWidth={2}
+                  dot={false}
                 />
-              </PieChart>
+              </LineChart>
             </ResponsiveContainer>
           </div>
+
+          {/* Row 2: User Activity and New User List */}
+          <div className="grid grid-cols-3 gap-4 mb-5">
+            <div className=" col-span-2 gap-4 ">
+              <div className="bg-white p-5 rounded-lg shadow">
+                <h3 className="text-xl font-semibold">Watchlist Activity</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={watchlistActivityData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      fill="#8884d8"
+                      label
+                    >
+                      {watchlistActivityData.map((index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={
+                            index.index === 0
+                              ? "#A888B5"
+                              : index.index === 1
+                              ? "#EFB6C8"
+                              : "#8174A0"
+                          }
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend
+                      layout="vertical"
+                      verticalAlign="middle"
+                      align="right"
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+            <div className="bg-white p-5 rounded-lg shadow">
+              <h3 className="text-xl font-semibold">New User List</h3>
+              <table className="text-center mx-auto  w-4/5 mt-4">
+                <tr className="border-b-2 ">
+                  <th className="border-r-2">Name</th>
+                  <th>Create Date</th>
+                </tr>
+
+                {newUserList.map((user) => (
+                  <tr>
+                    <td className="border-r-2" key={user.id}>
+                      {user.name}
+                    </td>
+                    <td>{user.date}</td>
+                  </tr>
+                ))}
+              </table>
+            </div>
+          </div>
+
+          {/* Row 3: Remaining Charts */}
+          <div className="grid grid-cols-3 gap-4 mb-5">
+            <div className="bg-white p-5 rounded-lg shadow">
+              <h3 className="text-xl font-semibold">Number of Transactions</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={transactionsData}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+
+                  <Bar dataKey="value" fill="#34d399" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="bg-white p-5 rounded-lg shadow">
+              <h3 className="text-xl font-semibold">Top Coins Traded</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={topCoinsTradedData}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+
+                  <Bar dataKey="value" fill="#fbbf24" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="bg-white p-5 rounded-lg shadow">
+              <h3 className="text-xl font-semibold">Top Performing Coins</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={topPerformingCoinsData}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+
+                  <Bar dataKey="value" fill="#60a5fa" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         </div>
-        <div className="bg-white p-5 rounded-lg shadow">
-          <h3 className="text-xl font-semibold">New User List</h3>
-          <table className="text-center mx-auto  w-4/5 mt-4">
-            <tr className="border-b-2 ">
-              <th className="border-r-2">Name</th>
-              <th>Create Date</th>
-            </tr>
-
-            {newUserList.map((user) => (
-              <tr>
-                <td className="border-r-2" key={user.id}>
-                  {user.name}
-                </td>
-                <td>{user.date}</td>
-              </tr>
-            ))}
-          </table>
-        </div>
-      </div>
-
-      {/* Row 3: Remaining Charts */}
-      <div className="grid grid-cols-3 gap-4 mb-5">
-        <div className="bg-white p-5 rounded-lg shadow">
-          <h3 className="text-xl font-semibold">Number of Transactions</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={transactionsData}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-
-              <Bar dataKey="value" fill="#34d399" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="bg-white p-5 rounded-lg shadow">
-          <h3 className="text-xl font-semibold">Top Coins Traded</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={topCoinsTradedData}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-
-              <Bar dataKey="value" fill="#fbbf24" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-white p-5 rounded-lg shadow">
-          <h3 className="text-xl font-semibold">Top Performing Coins</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={topPerformingCoinsData}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-
-              <Bar dataKey="value" fill="#60a5fa" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-    </div>
+      ) : (
+        "required Login"
+      )}
+    </>
   );
 };
 

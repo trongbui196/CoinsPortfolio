@@ -189,7 +189,7 @@ public class PortfolioService : MongoDBService
         {
             throw new Exception("Insufficient coins to sell");
         }
-        var ttc = (coininPort.totalChange == 0) ? 0 : (-trx.quantity * (coin.current_price - trx.coinPrice));
+        var ttc = (coininPort.totalChange == 0) ? 0 : (-trx.quantity * (coin.current_price));
         Console.WriteLine($"total change is:{ttc}");
 
         var filter = Builders<PortfolioCoinModel>.Filter.Eq(x => x.id, coininPort.id);

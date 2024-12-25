@@ -31,7 +31,7 @@ public class TransactionService : MongoDBService
 
                 break;
             case (TransactionModel.TrxType)1:
-                Console.WriteLine("sell to port:", trx.coinId);
+                Console.WriteLine($"sell to port:{trx.coinId}");
 
                 await _portService.SelltoPort(trx);
                 break;

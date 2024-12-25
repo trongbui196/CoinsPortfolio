@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
-
+import baseurl from "../baseurl";
 interface Transaction {
   id: string;
   userId: string;
@@ -19,13 +19,15 @@ export default function Transaction() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchUserId, setSearchUserId] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const transactionsPerPage = 20;
   const userId = useSelector((state: RootState) => state.user.userid);
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get<Transaction[]>(
-          "http://localhost:5101/api/Transactions/getAllTrx4Admin"
+        const response = await baseurl.get<Transaction[]>(
+          "api/Transactions/getAllTrx4Admin"
         );
         setTransactions(response.data);
       } catch (error) {
@@ -37,8 +39,20 @@ export default function Transaction() {
 
     fetchTransactions();
   }, []);
+
   const filteredTransactions = transactions.filter((transaction) =>
     transaction.userId.toLowerCase().includes(searchUserId.toLowerCase())
+  );
+
+  const indexOfLastTransaction = currentPage * transactionsPerPage;
+  const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+  const currentTransactions = filteredTransactions.slice(
+    indexOfFirstTransaction,
+    indexOfLastTransaction
+  );
+
+  const totalPages = Math.ceil(
+    filteredTransactions.length / transactionsPerPage
   );
 
   if (loading) {
@@ -51,7 +65,7 @@ export default function Transaction() {
         <>
           <div className="p-5">
             <h2 className="text-2xl font-bold mb-5">
-              Total Transactions: {transactions.length}
+              Total Transactions: {filteredTransactions.length}
             </h2>
             <input
               type="text"
@@ -61,7 +75,7 @@ export default function Transaction() {
               className="border p-2 mb-4 w-fit"
             />
             <div className="overflow-x-auto">
-              <table className=" min-w-full bg-white border border-gray-300 table-auto">
+              <table className="min-w-full bg-white border border-gray-300 table-auto">
                 <thead>
                   <tr>
                     <th className="border truncate">Transaction ID</th>
@@ -76,7 +90,7 @@ export default function Transaction() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredTransactions.map((transaction) => (
+                  {currentTransactions.map((transaction) => (
                     <tr key={transaction.id}>
                       <td className="border truncate px-4 py-2">
                         {transaction.id}
@@ -109,6 +123,28 @@ export default function Transaction() {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            <div className="flex justify-between mt-4">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              >
+                Previous
+              </button>
+              <span>
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              >
+                Next
+              </button>
             </div>
           </div>
         </>

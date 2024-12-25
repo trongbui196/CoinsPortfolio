@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
-import axios from "axios";
-
+import baseurl from "../baseurl";
 interface Coin {
   id: string;
   coinId: string;
@@ -20,16 +19,15 @@ export function MarketTable() {
   const [displayCount, setDisplayCount] = useState(20);
   const [marketData, setMarketData] = useState<Coin[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const fetchMarketData = async (count: number) => {
     setIsLoading(true);
     try {
       const endpoint =
-        count === 20
-          ? "http://localhost:5101/api/Coins/get20Coin"
-          : "http://localhost:5101/api/Coins/getCoins";
+        count === 20 ? "/api/Coins/get20Coin" : "/api/Coins/getCoins";
 
-      const response = await axios.get<Coin[]>(endpoint);
+      const response = await baseurl.get<Coin[]>(endpoint);
       setMarketData(response.data);
     } catch (error) {
       console.error("Failed to fetch market data:", error);
@@ -54,6 +52,10 @@ export function MarketTable() {
     navigate(`/coin/${coinId}`);
   };
 
+  const filteredMarketData = marketData.filter((coin) =>
+    coin.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden px-8">
       <div className="p-4 border-b border-gray-200">
@@ -62,6 +64,8 @@ export function MarketTable() {
             <input
               type="text"
               placeholder="Search Coin Name"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 pr-4 py-2 border border-gray-800 rounded-md bg-white text-black"
             />
             <Search
@@ -107,7 +111,7 @@ export function MarketTable() {
               </tr>
             </thead>
             <tbody>
-              {marketData.map((coin) => (
+              {filteredMarketData.map((coin) => (
                 <tr
                   key={coin.id}
                   className="border-b border-gray-300 hover:bg-orange-200"
