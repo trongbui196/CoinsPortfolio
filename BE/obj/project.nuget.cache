@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "D0z+ujN0HYA7Y3iSaKbhjJJca6nmeWtL+nMDPS+PDHcwC/nhNJ9LRAmnPwgoP4FrVTRk+D8lj93TNUCkwB8sCg==",
+  "dgSpecHash": "ERQ/TtxwyZy5nfEJj8zScTY2EWJfof0t5EX/3rjqPgVggggStqUtddo+PoGiqGtLRpI2VI8frqXEHWoY9cYdMw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\An\\Desktop\\TrongD\\New folder\\1\\CoinsPortfolio\\BE\\BE.csproj",
+  "projectFilePath": "C:\\Users\\An\\Desktop\\TrongD\\New folder\\1\\New folder\\CoinsPortfolio\\BE\\BE.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\An\\.nuget\\packages\\aspnetcore.identity.mongo\\9.0.0\\aspnetcore.identity.mongo.9.0.0.nupkg.sha512",
     "C:\\Users\\An\\.nuget\\packages\\awssdk.core\\3.7.100.14\\awssdk.core.3.7.100.14.nupkg.sha512",

@@ -28,9 +28,7 @@ async function startApp() {
 
 function isProduction() {
   // Update with your production domain
-  return (
-    window.location.hostname.indexOf("https://adminfecoinport.vercel.app/") > -1
-  );
+  return window.location.hostname.indexOf("https://withmeti.vercel.app/") > -1;
 }
 
 startApp();

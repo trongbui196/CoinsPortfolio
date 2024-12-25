@@ -3562,11 +3562,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\An\\Desktop\\TrongD\\New folder\\1\\CoinsPortfolio\\BE\\BE.csproj",
+      "projectUniqueName": "C:\\Users\\An\\Desktop\\TrongD\\New folder\\1\\New folder\\CoinsPortfolio\\BE\\BE.csproj",
       "projectName": "BE",
-      "projectPath": "C:\\Users\\An\\Desktop\\TrongD\\New folder\\1\\CoinsPortfolio\\BE\\BE.csproj",
+      "projectPath": "C:\\Users\\An\\Desktop\\TrongD\\New folder\\1\\New folder\\CoinsPortfolio\\BE\\BE.csproj",
       "packagesPath": "C:\\Users\\An\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\An\\Desktop\\TrongD\\New folder\\1\\CoinsPortfolio\\BE\\obj\\",
+      "outputPath": "C:\\Users\\An\\Desktop\\TrongD\\New folder\\1\\New folder\\CoinsPortfolio\\BE\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\An\\AppData\\Roaming\\NuGet\\NuGet.Config",
