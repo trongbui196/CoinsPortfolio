@@ -7,7 +7,7 @@ While the frontend is built using **React**, **Vite**, and **TailwindCSS**.
 ## Features
 
 - **Customer Features:**
-  - View real-time cryptocurrency information (prices, market data, etc.) from the **Coingecko API**.
+  - View real-time cryptocurrency information (prices, market data, etc.) from the **Coingecko API**. ( can be auto with cron job )
   - Mimic trading transactions (buy/sell virtual coins).
   - Manage a personal portfolio (track coin holdings, transactions, balance, etc.).
 
@@ -47,5 +47,5 @@ To get this project up and running locally, you need the following:
 1. Clone the repository to your local machine.
 
    ```bash
-   git clone https://github.com/yourusername/crypto-portfolio.git
-   cd crypto-portfolio
+   git clone https://github.com/trongbui196/CoinsPortfolio.git
+   
