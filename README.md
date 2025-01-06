@@ -31,6 +31,8 @@ While the frontend is built using **React**, **Vite**, and **TailwindCSS**.
 - **Deployment:**
   - Backend deployed on **Render** using **Docker**.
   - Frontend deployed using **React**.
+      - https://coins-portfolio-cyan.vercel.app/
+      - https://adminfecoinport.vercel.app/
 
 ## Getting Started
 
