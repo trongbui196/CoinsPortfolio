@@ -1,4 +1,5 @@
 # Crypto Portfolio & Trading Mimic App
+**Curently i'm turning my server off, if you want to test the fucntions hit me up at https://www.linkedin.com/in/trongbui196 and i will turn the server on. Feel free to use it as school project or anything.
 
 This project consists of a **backend** (ASP.NET Core) and **frontend** (React with Vite and TailwindCSS). The app provides functionality to display cryptocurrency information fetched from the **Coingecko API**, mimic trading transactions, and manage a portfolio of coins. There are two main user roles: **Customer** and **Admin**.
 
